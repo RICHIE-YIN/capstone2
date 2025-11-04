@@ -1,17 +1,19 @@
 package com.richie.model;
 
-public class Drink {
+public class Drink extends Product{
     private String size;
     private String flavor;
 
-    public Drink(String size, String flavor) {
+    public Drink(String name, double price, String size, String flavor) {
+        super(name, price);
         this.size = size;
         this.flavor = flavor;
     }
 
-    public Drink(String size) {
+    public Drink(String name, double price, String size) {
+        super(name, price);
         this.size = size;
-        this.flavor = "water";
+        this.flavor = "Water";
     }
 
     public String getSize() {
