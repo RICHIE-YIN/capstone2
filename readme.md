@@ -417,7 +417,7 @@ Testing = verifying your code works BEFORE building the UI.
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-class ToppingTest {
+class com.richie.model.ToppingTest {
     @Test
     void getPrice_shouldReturn1_50_whenPremiumBacon() {
         // ARRANGE
