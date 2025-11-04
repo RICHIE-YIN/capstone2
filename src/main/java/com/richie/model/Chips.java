@@ -1,9 +1,10 @@
 package com.richie.model;
 
-public class Chips {
+public class Chips extends Product {
     private String type;
 
     public Chips(String type) {
+        super(type, 1.50);
         this.type = type;
     }
 

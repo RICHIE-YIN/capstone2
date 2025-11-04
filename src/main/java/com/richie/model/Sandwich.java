@@ -2,12 +2,13 @@ package com.richie.model;
 
 import java.util.ArrayList;
 
-public class Sandwich {
+public class Sandwich extends Product {
     private String breadType;
     private String size;
     private ArrayList<Topping> toppings;
 
-    public Sandwich(String breadType, String size) {
+    public Sandwich(String name, String breadType, String size) {
+        super(name, 0.00);
         this.breadType = breadType;
         this.size = size;
         this.toppings = new ArrayList<>();

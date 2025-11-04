@@ -21,14 +21,14 @@ public class ToppingTest {
 
     @Test
     void fourInchSandwichShouldBeFiveFifty() {
-        Sandwich fourInSandwich = new Sandwich("Wheat", "4");
+        Sandwich fourInSandwich = new Sandwich("Four In Sandwich", "Wheat", "4");
         double price = fourInSandwich.getPrice();
         assertEquals(5.50, price);
     }
 
     @Test
     void eightInSandwichWithTwoToppingsShouldReturnCorrectPrice() {
-        Sandwich eightInSandwich = new Sandwich("White", "8");
+        Sandwich eightInSandwich = new Sandwich("Eight In Sandwich", "White", "8");
         Topping bacon = new Topping("Bacon", 1.0, true);
         Topping lettuce = new Topping("Lettuce", .50, false);
         eightInSandwich.addTopping(bacon);
@@ -40,7 +40,7 @@ public class ToppingTest {
 
     @Test
     void emptySandwichWithNoToppings() {
-        Sandwich sandwich = new Sandwich("Sourdough", "12");
+        Sandwich sandwich = new Sandwich("Super Sour Sandwich", "Sourdough", "12");
         double price = sandwich.getPrice();
         //12 in sandwich should equal 8.50
         assertEquals(8.50, price);

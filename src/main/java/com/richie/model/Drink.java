@@ -4,16 +4,29 @@ public class Drink extends Product{
     private String size;
     private String flavor;
 
-    public Drink(String name, double price, String size, String flavor) {
-        super(name, price);
+    public Drink(String name, String size, String flavor) {
+        super(name, 0.00);
         this.size = size;
         this.flavor = flavor;
     }
 
-    public Drink(String name, double price, String size) {
-        super(name, price);
+    public Drink(String name, String size) {
+        super(name, 0.00);
         this.size = size;
         this.flavor = "Water";
+    }
+
+    @Override
+    public double getPrice() {
+        double basePrice = 4;
+        if(size.equalsIgnoreCase("small")) {
+            basePrice = basePrice;
+        } else if (size.equalsIgnoreCase("medium")) {
+            basePrice = basePrice * 1.5;
+        } else if (size.equalsIgnoreCase("large")) {
+            basePrice = basePrice * 2;
+        }
+        return basePrice;
     }
 
     public String getSize() {
