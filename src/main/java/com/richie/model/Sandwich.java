@@ -8,16 +8,30 @@ public class Sandwich extends Product {
     private ArrayList<Topping> toppings;
 
     public Sandwich(String name, String breadType, String size) {
-        super(name, 0.00);
+        super(name);
         this.breadType = breadType;
         this.size = size;
         this.toppings = new ArrayList<>();
+    }
+
+    public void displayDetails(Product product) {
+        System.out.println("Name: " + product.getName());
+        System.out.println("Price: " + product.getPrice());
+
+        if(product instanceof Sandwich) {
+            Sandwich sandwich = (Sandwich) product;
+            System.out.println("Bread: " + sandwich.getBreadType());
+        } else if (product instanceof Drink) {
+            Drink drink = (Drink) product;
+            System.out.println("Size: " + drink.getSize());
+        }
     }
 
     public void addTopping (Topping t) {
         toppings.add(t);
     }
 
+    @Override
     public double getPrice() {
         double total = 0;
         if (size.equals("4")) {

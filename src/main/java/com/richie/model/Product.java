@@ -1,12 +1,10 @@
 package com.richie.model;
 
-public class Product {
+public abstract class Product {
     protected String name;
-    protected double price;
 
-    public Product(String name, double price) {
+    public Product(String name) {
         this.name = name;
-        this.price = price;
     }
 
     public String getName() {
@@ -17,11 +15,9 @@ public class Product {
         this.name = name;
     }
 
-    public double getPrice() {
-        return price;
-    }
+    public abstract double getPrice();
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void displayInfo() {
+        System.out.println(name + ": " + getPrice());
     }
 }

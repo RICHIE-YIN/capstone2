@@ -15,6 +15,10 @@ public class test {
             total += p.getPrice();
         }
 
-        System.out.println(total);
+        for(Product p : items) {
+            System.out.println("Item: " + p.getName() + ", price: " + p.getPrice());
+        }
+
+        System.out.println("Total:" + total);
     }
 }

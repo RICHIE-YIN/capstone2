@@ -5,13 +5,13 @@ public class Drink extends Product{
     private String flavor;
 
     public Drink(String name, String size, String flavor) {
-        super(name, 0.00);
+        super(name);
         this.size = size;
         this.flavor = flavor;
     }
 
     public Drink(String name, String size) {
-        super(name, 0.00);
+        super(name);
         this.size = size;
         this.flavor = "Water";
     }

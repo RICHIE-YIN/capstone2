@@ -4,7 +4,7 @@ public class Chips extends Product {
     private String type;
 
     public Chips(String type) {
-        super(type, 1.50);
+        super(type);
         this.type = type;
     }
 
@@ -12,6 +12,7 @@ public class Chips extends Product {
         return type;
     }
 
+    @Override
     public double getPrice() {
         return 1.50;
     }
