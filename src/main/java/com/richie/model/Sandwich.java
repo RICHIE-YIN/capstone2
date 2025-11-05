@@ -2,16 +2,36 @@ package com.richie.model;
 
 import java.util.ArrayList;
 
-public class Sandwich extends Product {
+public class Sandwich extends Product implements Customizable {
     private String breadType;
     private String size;
     private ArrayList<Topping> toppings;
+    private ArrayList<String> extras;
 
     public Sandwich(String name, String breadType, String size) {
         super(name);
         this.breadType = breadType;
         this.size = size;
         this.toppings = new ArrayList<>();
+        this.extras = new ArrayList<>();
+    }
+
+    @Override
+    public void addExtra(String extra) {
+        extras.add(extra);
+    }
+
+    @Override
+    public ArrayList<String> getExtras() {
+        return extras;
+    }
+
+    @Override
+    public boolean hasExtras() {
+        if(extras.isEmpty()) {
+            return false;
+        }
+        return true;
     }
 
     public void displayDetails(Product product) {
