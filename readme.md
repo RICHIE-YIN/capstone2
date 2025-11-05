@@ -976,69 +976,169 @@ int quantity = InputValidator.getInt(scanner,
 
 ## 📖 CONCEPT
 
-Save receipts to files so customers can review later.
+**You already did this in Capstone One!** Same `BufferedWriter` pattern, different format.
 
-**Pattern:**
-1. Create receipts folder (if needed)
-2. Generate unique filename (timestamp)
-3. Write order details
-4. Close file
+**Capstone One:** Appended to one CSV file
+**Capstone Two:** Create individual receipt files
 
-> 💡 **CAPSTONE CONNECTION:** Every checkout saves a receipt file!
+> 💡 **CAPSTONE CONNECTION:** Every checkout saves a timestamped receipt file!
 
 ---
 
-## 🔍 EXAMPLE: Save Receipt
+## 🔍 EXAMPLE: Your Ledger Pattern → Receipts
 
+### **Capstone One (You know this):**
 ```java
+try (BufferedWriter writer = new BufferedWriter(new FileWriter("transactions.csv", true))) {
+    String entry = date + "|" + time + "|" + description + "|" + vendor + "|" + amount;
+    writer.write(entry);
+    writer.newLine();
+}
+```
+
+### **Capstone Two (Same pattern!):**
+```java
+try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+    writer.write("DELI-CIOUS RECEIPT\n");
+    writer.write("Date: " + LocalDateTime.now() + "\n");
+    writer.write("===================\n");
+    // Write items...
+}
+```
+
+**Key difference:** No `true` parameter - each receipt is its own file!
+
+---
+
+## 🔍 EXAMPLE: ReceiptFileManager
+```java
+package com.richie.util;
+
+import com.richie.model.*;
+import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ReceiptFileManager {
     private static final String RECEIPTS_FOLDER = "receipts/";
     
     public static void saveReceipt(Order order) {
-        // Create folder if doesn't exist
+        // Create folder (like your data folder)
         File folder = new File(RECEIPTS_FOLDER);
         if (!folder.exists()) {
             folder.mkdir();
         }
         
         // Generate filename with timestamp
-        String timestamp = LocalDateTime.now()
-            .format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
+        LocalDateTime now = LocalDateTime.now();
+        String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
         String filename = RECEIPTS_FOLDER + timestamp + ".txt";
         
-        // Write file
+        // Write file (you know this!)
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
-            writer.write("DELI-CIOUS RECEIPT\n");
-            writer.write("==================\n\n");
+            // Header
+            writer.write("======================================\n");
+            writer.write("        DELI-CIOUS RECEIPT\n");
+            writer.write("======================================\n");
+            writer.write("Date: " + now.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")) + "\n\n");
             
+            // Items
             for (Product p : order.getItems()) {
-                writer.write(p.getName() + ": $" + p.getPrice() + "\n");
+                writer.write(String.format("%-25s $%6.2f\n", p.getName(), p.getPrice()));
+                
+                if (p instanceof Sandwich) {
+                    Sandwich s = (Sandwich) p;
+                    writer.write("  Bread: " + s.getBreadType() + " | Size: " + s.getSize() + "\"\n");
+                    if (!s.getToppings().isEmpty()) {
+                        writer.write("  Toppings: ");
+                        for (Topping t : s.getToppings()) {
+                            writer.write(t.getName() + ", ");
+                        }
+                        writer.write("\n");
+                    }
+                } else if (p instanceof Drink) {
+                    Drink d = (Drink) p;
+                    writer.write("  " + d.getSize() + " " + d.getFlavor() + "\n");
+                }
+                writer.write("\n");
             }
             
-            writer.write("\nSubtotal: $" + order.getSubtotal());
-            writer.write("\nTax: $" + order.getTax());
-            writer.write("\nTotal: $" + order.getTotal());
+            // Totals
+            writer.write("======================================\n");
+            writer.write(String.format("Subtotal:               $%8.2f\n", order.getSubtotal()));
+            writer.write(String.format("Tax (7%%):               $%8.2f\n", order.getTax()));
+            writer.write("--------------------------------------\n");
+            writer.write(String.format("TOTAL:                  $%8.2f\n", order.getTotal()));
+            writer.write("======================================\n");
             
-            System.out.println("Receipt saved: " + filename);
+            System.out.println("✅ Receipt saved: " + filename);
+            
         } catch (IOException e) {
-            System.out.println("Error saving receipt: " + e.getMessage());
+            System.out.println("❌ Error: " + e.getMessage());
         }
+    }
+    
+    // Optional: Display to screen before saving
+    public static void displayReceipt(Order order) {
+        System.out.println("\n======================================");
+        System.out.println("           ORDER SUMMARY");
+        System.out.println("======================================\n");
+        
+        for (Product p : order.getItems()) {
+            System.out.printf("%-25s $%6.2f\n", p.getName(), p.getPrice());
+        }
+        
+        System.out.println("\n======================================");
+        System.out.printf("Subtotal:               $%8.2f\n", order.getSubtotal());
+        System.out.printf("Tax (7%%):               $%8.2f\n", order.getTax());
+        System.out.println("--------------------------------------");
+        System.out.printf("TOTAL:                  $%8.2f\n", order.getTotal());
+        System.out.println("======================================\n");
     }
 }
 ```
 
-**Key:** Use try-with-resources to auto-close file.
+---
+
+## 📊 COMPARISON
+
+| Ledger (Cap 1) | Receipts (Cap 2) |
+|----------------|------------------|
+| One CSV file | Multiple TXT files |
+| `new FileWriter(file, true)` | `new FileWriter(file)` |
+| `transactions.csv` | `20251104-143025.txt` |
+| Pipe-delimited | Formatted text |
+| Same `BufferedWriter` ✓ | Same `BufferedWriter` ✓ |
+| `LocalDate.now()` | `LocalDateTime.now()` |
 
 ---
 
 ## 💡 YOUR TURN
 
-Add method to display receipt to screen BEFORE saving:
+1. Create `ReceiptFileManager.java` in `com.richie.util`
+2. Implement `saveReceipt(Order order)`
+3. Test it:
 ```java
-public static void displayReceipt(Order order) {
-    // TODO: Same format as saveReceipt, but use System.out.println
-}
+Order order = new Order();
+order.addItem(new Sandwich("BLT", "white", "8"));
+order.addItem(new Drink("Coke", "large"));
+
+ReceiptFileManager.displayReceipt(order);
+ReceiptFileManager.saveReceipt(order);
 ```
+4. Check `receipts/` folder for the file
+
+---
+
+## ✅ SELF-CHECK
+
+- [ ] `receipts/` folder created automatically
+- [ ] Filename has timestamp format `yyyyMMdd-HHmmss.txt`
+- [ ] Receipt shows all products
+- [ ] Totals are correct
+- [ ] File readable with any text editor
+
+**Time:** 1-2 hours (you know BufferedWriter already!)
 
 ---
 

@@ -36,7 +36,15 @@ public class Order implements Taxable {
         }
     }
 
-//    public double getSubtotal() {
+    public ArrayList<Product> getItems() {
+        return items;
+    }
+
+    public void setItems(ArrayList<Product> items) {
+        this.items = items;
+    }
+
+    //    public double getSubtotal() {
 //        double subTotal = 0;
 //        for(Sandwich s : sandwiches) {
 //            subTotal += s.getPrice();
