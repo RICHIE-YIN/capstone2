@@ -1,7 +1,7 @@
 package com.richie.model;
 import java.util.ArrayList;
 
-public class Order {
+public class Order implements Taxable {
     private ArrayList<Product> items;
 
     public Order() {
@@ -10,6 +10,15 @@ public class Order {
 
     public void addItem(Product p) {
         items.add(p);
+    }
+
+    @Override
+    public double getSubtotal() {
+        double total = 0;
+        for(Product p : items) {
+            total += p.getPrice();
+        }
+        return total;
     }
 
     public void displayAll() {
