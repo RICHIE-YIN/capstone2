@@ -1,4 +1,4 @@
-import com.richie.model.Sandwich;
+import com.richie.model.PokeBowl;
 import com.richie.model.Topping;
 import org.junit.jupiter.api.Test;
 
@@ -7,42 +7,42 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ToppingTest {
     @Test
     void getPriceShouldReturnPremiumMultiplier() {
-        Topping bacon = new Topping("Bacon", 1.00, true);
-        double price = bacon.getPrice();
-        assertEquals(1.50, price);
+        Topping takoyaki = new Topping("Takoyaki", 2.00, true);
+        double price = takoyaki.getPrice();
+        assertEquals(3, price);
     }
 
     @Test
     void getRegularNonPremiumPriceShouldNotMultiply() {
-        Topping lettuce = new Topping("Lettuce", 0.50, false);
-        double price = lettuce.getPrice();
+        Topping edamame = new Topping("Edamame", 0.50, false);
+        double price = edamame.getPrice();
         assertEquals(0.50, price);
     }
 
     @Test
-    void fourInchSandwichShouldBeFiveFifty() {
-        Sandwich fourInSandwich = new Sandwich("Four In Sandwich", "Wheat", "4");
-        double price = fourInSandwich.getPrice();
-        assertEquals(5.50, price);
+    void smallBowlShouldBeNineFifty() {
+        PokeBowl smallBowl = new PokeBowl("Small bowl", "White Rice", "S");
+        double price = smallBowl.getPrice();
+        assertEquals(9.50, price);
     }
 
     @Test
-    void eightInSandwichWithTwoToppingsShouldReturnCorrectPrice() {
-        Sandwich eightInSandwich = new Sandwich("Eight In Sandwich", "White", "8");
-        Topping bacon = new Topping("Bacon", 1.0, true);
-        Topping lettuce = new Topping("Lettuce", .50, false);
-        eightInSandwich.addTopping(bacon);
-        eightInSandwich.addTopping(lettuce);
-        double price = eightInSandwich.getPrice();
-        //8in sandwich = 7 + bacon 1.50 + lettuce .50 = 9
-        assertEquals(9, price);
+    void mediumBowlWithTwoToppingsShouldReturnCorrectPrice() {
+        PokeBowl mediumBowl = new PokeBowl("Medium Test Bowl", "White Rice", "M");
+        Topping takoyaki = new Topping("Takoyaki", 2.0, true);
+        Topping edamame = new Topping("Edamame", .50, false);
+        mediumBowl.addTopping(takoyaki);
+        mediumBowl.addTopping(edamame);
+        double price = mediumBowl.getPrice();
+        //M bowl = 9.50 + takoyaki 3 + lettuce .50 = 13
+        assertEquals(15.50, price);
     }
 
     @Test
-    void emptySandwichWithNoToppings() {
-        Sandwich sandwich = new Sandwich("Super Sour Sandwich", "Sourdough", "12");
-        double price = sandwich.getPrice();
-        //12 in sandwich should equal 8.50
-        assertEquals(8.50, price);
+    void emptyBowlWithNoToppings() {
+        PokeBowl pokeBowl = new PokeBowl("Empty Bowl", "Brown Rice", "L");
+        double price = pokeBowl.getPrice();
+        //L bowl should = 15.50
+        assertEquals(15.50, price);
     }
 }

@@ -1,12 +1,10 @@
 package com.richie.model;
 
-import java.util.ArrayList;
-
-public class SignatureSandwich extends Sandwich{
+public class SignaturePokeBowl extends PokeBowl {
     private String signatureName;
 
-    public SignatureSandwich(String name, String breadType, String size, String signatureName) {
-        super(signatureName, breadType, size);
+    public SignaturePokeBowl(String name, String base, String size, String signatureName) {
+        super(signatureName, base, size);
         this.signatureName = signatureName;
     }
 

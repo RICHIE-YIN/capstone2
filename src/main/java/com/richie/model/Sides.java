@@ -1,9 +1,9 @@
 package com.richie.model;
 
-public class Chips extends Product {
+public class Sides extends Product {
     private String type;
 
-    public Chips(String type) {
+    public Sides(String type) {
         super(type);
         this.type = type;
     }
@@ -14,7 +14,7 @@ public class Chips extends Product {
 
     @Override
     public double getPrice() {
-        return 1.50;
+        return 2.50;
     }
 
     public void setType(String type) {

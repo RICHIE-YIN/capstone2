@@ -1011,29 +1011,31 @@ try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
 ---
 
 ## 🔍 EXAMPLE: ReceiptFileManager
+
 ```java
 package com.richie.util;
 
 import com.richie.model.*;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class ReceiptFileManager {
     private static final String RECEIPTS_FOLDER = "receipts/";
-    
+
     public static void saveReceipt(Order order) {
         // Create folder (like your data folder)
         File folder = new File(RECEIPTS_FOLDER);
         if (!folder.exists()) {
             folder.mkdir();
         }
-        
+
         // Generate filename with timestamp
         LocalDateTime now = LocalDateTime.now();
         String timestamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss"));
         String filename = RECEIPTS_FOLDER + timestamp + ".txt";
-        
+
         // Write file (you know this!)
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
             // Header
@@ -1041,13 +1043,13 @@ public class ReceiptFileManager {
             writer.write("        DELI-CIOUS RECEIPT\n");
             writer.write("======================================\n");
             writer.write("Date: " + now.format(DateTimeFormatter.ofPattern("MM/dd/yyyy hh:mm a")) + "\n\n");
-            
+
             // Items
             for (Product p : order.getItems()) {
                 writer.write(String.format("%-25s $%6.2f\n", p.getName(), p.getPrice()));
-                
-                if (p instanceof Sandwich) {
-                    Sandwich s = (Sandwich) p;
+
+                if (p instanceof PokeBowl) {
+                    PokeBowl s = (PokeBowl) p;
                     writer.write("  Bread: " + s.getBreadType() + " | Size: " + s.getSize() + "\"\n");
                     if (!s.getToppings().isEmpty()) {
                         writer.write("  Toppings: ");
@@ -1062,7 +1064,7 @@ public class ReceiptFileManager {
                 }
                 writer.write("\n");
             }
-            
+
             // Totals
             writer.write("======================================\n");
             writer.write(String.format("Subtotal:               $%8.2f\n", order.getSubtotal()));
@@ -1070,24 +1072,24 @@ public class ReceiptFileManager {
             writer.write("--------------------------------------\n");
             writer.write(String.format("TOTAL:                  $%8.2f\n", order.getTotal()));
             writer.write("======================================\n");
-            
+
             System.out.println("✅ Receipt saved: " + filename);
-            
+
         } catch (IOException e) {
             System.out.println("❌ Error: " + e.getMessage());
         }
     }
-    
+
     // Optional: Display to screen before saving
     public static void displayReceipt(Order order) {
         System.out.println("\n======================================");
         System.out.println("           ORDER SUMMARY");
         System.out.println("======================================\n");
-        
+
         for (Product p : order.getItems()) {
             System.out.printf("%-25s $%6.2f\n", p.getName(), p.getPrice());
         }
-        
+
         System.out.println("\n======================================");
         System.out.printf("Subtotal:               $%8.2f\n", order.getSubtotal());
         System.out.printf("Tax (7%%):               $%8.2f\n", order.getTax());

@@ -2,15 +2,15 @@ package com.richie.model;
 
 import java.util.ArrayList;
 
-public class Sandwich extends Product implements Customizable {
-    private String breadType;
+public class PokeBowl extends Product implements Customizable {
+    private String base;
     private String size;
     private ArrayList<Topping> toppings;
     private ArrayList<String> extras;
 
-    public Sandwich(String name, String breadType, String size) {
+    public PokeBowl(String name, String base, String size) {
         super(name);
-        this.breadType = breadType;
+        this.base = base;
         this.size = size;
         this.toppings = new ArrayList<>();
         this.extras = new ArrayList<>();
@@ -38,9 +38,9 @@ public class Sandwich extends Product implements Customizable {
         System.out.println("Name: " + product.getName());
         System.out.println("Price: " + product.getPrice());
 
-        if(product instanceof Sandwich) {
-            Sandwich sandwich = (Sandwich) product;
-            System.out.println("Bread: " + sandwich.getBreadType());
+        if(product instanceof PokeBowl) {
+            PokeBowl pokeBowl = (PokeBowl) product;
+            System.out.println("Base: " + pokeBowl.getBase());
         } else if (product instanceof Drink) {
             Drink drink = (Drink) product;
             System.out.println("Size: " + drink.getSize());
@@ -54,12 +54,12 @@ public class Sandwich extends Product implements Customizable {
     @Override
     public double getPrice() {
         double total = 0;
-        if (size.equals("4")) {
-            total = 5.50;
-        } else if (size.equals("8")) {
-            total = 7.00;
-        } else if (size.equals("12")) {
-            total = 8.50;
+        if (size.equals("S")) {
+            total = 9.50;
+        } else if (size.equals("M")) {
+            total = 12.00;
+        } else if (size.equals("L")) {
+            total = 15.50;
         }
 
         for (Topping t : toppings) {
@@ -69,12 +69,12 @@ public class Sandwich extends Product implements Customizable {
         return total;
     }
 
-    public String getBreadType() {
-        return breadType;
+    public String getBase() {
+        return base;
     }
 
-    public void setBreadType(String breadType) {
-        this.breadType = breadType;
+    public void setBase(String base) {
+        this.base = base;
     }
 
     public String getSize() {

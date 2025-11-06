@@ -4,16 +4,10 @@ public class Drink extends Product{
     private String size;
     private String flavor;
 
-    public Drink(String name, String size, String flavor) {
-        super(name);
+    public Drink(String size, String flavor) {
+        super(flavor);
         this.size = size;
         this.flavor = flavor;
-    }
-
-    public Drink(String name, String size) {
-        super(name);
-        this.size = size;
-        this.flavor = "Water";
     }
 
     @Override

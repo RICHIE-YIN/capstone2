@@ -26,15 +26,15 @@ public class ReceiptFileManager {
         try{
             FileWriter fileWriter = new FileWriter(fileName);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("DELI-CIOUS RECEIPT\n");
+            bufferedWriter.write("Funkin Poke!!! RECEIPT\n");
             bufferedWriter.write("Date: " + LocalDateTime.now().format(displayTimeStamp) + "\n");
             bufferedWriter.write("======================================\n");
 
             for(Product p : order.getItems()) {
                 bufferedWriter.write(String.format("Item: %s, Price: %.2f\n", p.getName(), p.getPrice()));
-                if(p instanceof Sandwich) {
-                    Sandwich s = (Sandwich) p;
-                    bufferedWriter.write(" Bread: " + s.getBreadType() + " | Size: " + s.getSize() + "\n");
+                if(p instanceof PokeBowl) {
+                    PokeBowl s = (PokeBowl) p;
+                    bufferedWriter.write(" Base: " + s.getBase() + " | Size: " + s.getSize() + "\n");
                     if(!s.getToppings().isEmpty()) {
                         bufferedWriter.write("  Toppings:\n");
                         for(Topping t : s.getToppings()) {
