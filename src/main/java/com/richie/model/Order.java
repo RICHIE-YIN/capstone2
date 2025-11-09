@@ -3,8 +3,10 @@ import java.util.ArrayList;
 
 public class Order implements Taxable {
     private ArrayList<Product> items;
+    private String name;
 
-    public Order() {
+    public Order(String name) {
+        this.name = name;
         this.items = new ArrayList<>();
     }
 
@@ -44,4 +46,11 @@ public class Order implements Taxable {
         this.items = items;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

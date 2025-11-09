@@ -4,7 +4,7 @@ import com.richie.util.ReceiptFileManager;
 
 public class test {
     public static void main(String[] args) {
-        Order order = new Order();
+        Order order = new Order("Richie");
 
         PokeBowl bowl1 = new PokeBowl("Richie's Bowl", "White Rice", "L");
         PokeBowl bowl2 = new PokeBowl("Kayla's Bowl", "White Rice", "S");

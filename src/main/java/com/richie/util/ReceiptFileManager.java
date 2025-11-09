@@ -68,16 +68,43 @@ public class ReceiptFileManager {
     public static void previewReceipt(Order order) {
         System.out.println("\n======================================");
         System.out.println("              ORDER SUMMARY             ");
-        System.out.println("======================================\n");
+        System.out.println("======================================");
 
         for(Product p : order.getItems()) {
-            System.out.printf("Name: %s, price: %.2f\n", p.getName(), p.getPrice());
+            System.out.printf("\nItem: %s, Price: $%.2f\n", p.getName(), p.getPrice());
+
+            if(p instanceof PokeBowl) {
+                PokeBowl pokeBowl = (PokeBowl) p;
+                System.out.println(" Base: " + pokeBowl.getBase() + " | Size: " + pokeBowl.getSize());
+
+                if(!pokeBowl.getToppings().isEmpty()) {
+                    System.out.println("  Toppings:");
+                    for(Topping t : pokeBowl.getToppings()) {
+                        System.out.println("   - " + t.getName());
+                    }
+                }
+
+                if(pokeBowl.hasExtras()) {
+                    System.out.println("  Extras:");
+                    for(String extra : pokeBowl.getExtras()) {
+                        System.out.println("   - " + extra);
+                    }
+                }
+
+            } else if (p instanceof Drink) {
+                Drink d = (Drink) p;
+                System.out.println(" Size: " + d.getSize() + " | Flavor: " + d.getFlavor());
+
+            } else if (p instanceof Sides) {
+                Sides s = (Sides) p;
+                System.out.println(" Type: " + s.getType());
+            }
         }
 
         System.out.println("\n======================================");
         System.out.printf("Subtotal:                 $%.2f\n", order.getSubtotal());
         System.out.printf("Tax (7%%):                 $%.2f\n", order.getTax());
-        System.out.println("--------------------------------------\n");
+        System.out.println("--------------------------------------");
         System.out.printf("TOTAL:                    $%.2f\n", order.getTotal());
         System.out.println("======================================\n");
     }
