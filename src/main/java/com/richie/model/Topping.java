@@ -7,7 +7,7 @@ public class Topping {
     private boolean isPremium;
 
     public Topping(String name, double basePrice, boolean isPremium) {
-        this.name = name;           // "this" = this object's field
+        this.name = name;
         this.basePrice = basePrice;
         this.isPremium = isPremium;
         totalCreated++;

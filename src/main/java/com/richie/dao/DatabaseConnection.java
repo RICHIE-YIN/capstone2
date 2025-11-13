@@ -24,7 +24,7 @@ public class DatabaseConnection {
         if(dbUrl != null) {
             //for production
             if(dbUrl.startsWith("postgres://")) {
-                dbUrl = dbUrl.replace("postgres://", "jbdc:postgresql://");
+                dbUrl = dbUrl.replace("postgres://", "jdbc:postgresql://");
             }
             System.out.println("Using production database");
             return DriverManager.getConnection(dbUrl);
