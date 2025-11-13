@@ -13,11 +13,11 @@ public class Drink extends Product{
     @Override
     public double getPrice() {
         double basePrice = 4;
-        if(size.equalsIgnoreCase("small")) {
+        if(size.equalsIgnoreCase("small") || size.equalsIgnoreCase("s")) {
             basePrice = basePrice;
-        } else if (size.equalsIgnoreCase("medium")) {
+        } else if (size.equalsIgnoreCase("medium") || size.equalsIgnoreCase("m")) {
             basePrice = basePrice * 1.5;
-        } else if (size.equalsIgnoreCase("large")) {
+        } else if (size.equalsIgnoreCase("large") || size.equalsIgnoreCase("l")) {
             basePrice = basePrice * 2;
         }
         return basePrice;

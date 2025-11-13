@@ -6,7 +6,7 @@ public class PokeBowl extends Product implements Customizable {
     private String base;
     private String size;
     private ArrayList<Topping> toppings;
-    private ArrayList<String> extras;
+    private ArrayList<Extra> extras;
 
     public PokeBowl(String name, String base, String size) {
         super(name);
@@ -16,15 +16,14 @@ public class PokeBowl extends Product implements Customizable {
         this.extras = new ArrayList<>();
     }
 
-    @Override
-    public void addExtra(String extra) {
+    public void addExtra(Extra extra) {
         extras.add(extra);
     }
 
-    @Override
-    public ArrayList<String> getExtras() {
+    public ArrayList<Extra> getExtras() {
         return extras;
     }
+
 
     @Override
     public boolean hasExtras() {
@@ -64,6 +63,10 @@ public class PokeBowl extends Product implements Customizable {
 
         for (Topping t : toppings) {
             total += t.getPrice();
+        }
+
+        for (Extra e : extras) {
+            total += e.getPrice();
         }
 
         return total;

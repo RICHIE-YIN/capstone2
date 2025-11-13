@@ -38,14 +38,23 @@ public class ReceiptFileManager {
                     if(!s.getToppings().isEmpty()) {
                         bufferedWriter.write("  Toppings:\n");
                         for(Topping t : s.getToppings()) {
-                            bufferedWriter.write("   -" + t.getName() + "\n");
+                            bufferedWriter.write("   - " + t.getName() + "\n");
+                        }
+                    }
+                    // ADD THIS BLOCK FOR EXTRAS
+                    if(s.hasExtras()) {
+                        bufferedWriter.write("  Extras:\n");
+                        for(Extra e : s.getExtras()) {
+                            bufferedWriter.write(String.format("   - %s: +$%.2f\n", e.getName(), e.getUpcharge()));
                         }
                     }
                 } else if (p instanceof Drink) {
                     Drink d = (Drink) p;
-                    bufferedWriter.write(" Size: " + d.getSize() + "| Flavor: " + d.getFlavor());
+                    bufferedWriter.write(" Size: " + d.getSize() + " | Flavor: " + d.getFlavor());
                     bufferedWriter.write("\n");
-
+                } else if (p instanceof Sides) {
+                    Sides s = (Sides) p;
+                    bufferedWriter.write(" Type: " + s.getType() + "\n");
                 }
                 bufferedWriter.write("\n");
             }
@@ -86,8 +95,8 @@ public class ReceiptFileManager {
 
                 if(pokeBowl.hasExtras()) {
                     System.out.println("  Extras:");
-                    for(String extra : pokeBowl.getExtras()) {
-                        System.out.println("   - " + extra);
+                    for(Extra extra : pokeBowl.getExtras()) {
+                        System.out.printf("   - %s: +$%.2f\n", extra.getName(), extra.getUpcharge());
                     }
                 }
 

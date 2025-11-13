@@ -1,7 +1,10 @@
 --clear
+DROP TABLE IF EXISTS order_item_extras CASCADE;
 DROP TABLE IF EXISTS order_item_toppings CASCADE;
 DROP TABLE IF EXISTS order_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
+DROP TABLE IF EXISTS drinks CASCADE;
+DROP TABLE IF EXISTS sides CASCADE;
 DROP TABLE IF EXISTS toppings CASCADE;
 DROP TABLE IF EXISTS restaurants CASCADE;
 
@@ -22,6 +25,18 @@ CREATE TABLE toppings (
     is_premium BOOLEAN DEFAULT false
 );
 
+--sides
+CREATE TABLE sides (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
+--drinks
+CREATE TABLE drinks (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL UNIQUE
+);
+
 --orders
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
@@ -36,12 +51,12 @@ CREATE TABLE orders (
 CREATE TABLE order_items (
     id SERIAL PRIMARY KEY,
     order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
-    item_type VARCHAR(20) NOT NULL,  -- product type
+    item_type VARCHAR(20) NOT NULL,
     item_name VARCHAR(100),
-    base VARCHAR(50),                 -- base for bowls
-    size VARCHAR(10),                 -- s, m, or l for bowls
-    flavor VARCHAR(100),              -- for drinks
-    side_type VARCHAR(100),           -- for sides
+    base VARCHAR(50),
+    size VARCHAR(10),
+    flavor VARCHAR(100),
+    side_type VARCHAR(100),
     price DECIMAL(10, 2) NOT NULL
 );
 
@@ -50,10 +65,18 @@ CREATE TABLE order_item_toppings (
     id SERIAL PRIMARY KEY,
     order_item_id INTEGER NOT NULL REFERENCES order_items(id) ON DELETE CASCADE,
     topping_id INTEGER NOT NULL REFERENCES toppings(id),
-    price DECIMAL(10, 2) NOT NULL    -- Price snapshot at time of order
+    price DECIMAL(10, 2) NOT NULL
 );
 
---adds to restaurant
+--product + extras (for bowls)
+CREATE TABLE order_item_extras (
+    id SERIAL PRIMARY KEY,
+    order_item_id INTEGER NOT NULL REFERENCES order_items(id) ON DELETE CASCADE,
+    topping_id INTEGER NOT NULL REFERENCES toppings(id),
+    upcharge DECIMAL(10, 2) NOT NULL
+);
+
+--add restaurant
 INSERT INTO restaurants (name, cuisine_type, description)
 VALUES ('Funkin'' Poke', 'Hawaiian', 'Fresh poke bowls with premium toppings');
 
@@ -85,3 +108,49 @@ INSERT INTO toppings (name, base_price, is_premium) VALUES
 ('Furikake', 0.25, false),
 ('Crispy Onions', 0.50, false),
 ('Tempura Flakes', 0.50, false);
+
+--create sides (just names)
+INSERT INTO sides (name) VALUES
+('Edamame'),
+('Seaweed Salad'),
+('Miso Soup'),
+('Cucumber Salad'),
+('Kimchi'),
+('Crab Salad'),
+('Spicy Tuna Mix'),
+('Spicy Crab Mix'),
+('Salmon Poke Scoop'),
+('Tuna Poke Scoop'),
+('Gyoza'),
+('Takoyaki'),
+('Spring Rolls'),
+('Crispy Tofu Bites'),
+('Tamago Slices'),
+('Mini Rice Bowl'),
+('Imitation Crab'),
+('Mango Slices'),
+('Pineapple Cubes'),
+('Wasabi Peas');
+
+--create drinks (just names)
+INSERT INTO drinks (name) VALUES
+('Green Tea'),
+('Mango Iced Tea'),
+('Lychee Lemonade'),
+('Yuzu Soda'),
+('Coconut Water'),
+('Passion Fruit Juice'),
+('Matcha Milk Tea'),
+('Thai Iced Tea'),
+('Pineapple Refresher'),
+('Watermelon Refresher'),
+('Strawberry Lemonade'),
+('Peach Green Tea'),
+('Honeydew Juice'),
+('Brown Sugar Milk Tea'),
+('Taro Milk Tea'),
+('Black Milk Tea'),
+('Jasmine Milk Tea'),
+('Rose Milk Tea'),
+('Lavender Lemonade'),
+('Sparkling Lychee Water');

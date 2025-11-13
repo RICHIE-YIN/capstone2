@@ -67,7 +67,7 @@ public class CLI {
 
     public static PokeBowl entreeScreen() {
         ArrayList<Topping> pokeBowlToppings = new ArrayList<>();
-        ArrayList<String> pokeBowlExtras = new ArrayList<>();
+        ArrayList<Extra> pokeBowlExtras = new ArrayList<>();
 
         System.out.println("Name your poke bowl:");
         String name = scanner.nextLine();
@@ -79,30 +79,36 @@ public class CLI {
             System.out.println("Invalid size, defaulting to Medium.");
             sizeAnswer = "M";
         }
+
         System.out.println("Would you like to add toppings?");
         String toppingsAnswer = scanner.nextLine();
         if(toppingsAnswer.equalsIgnoreCase("yes")) {
             pokeBowlToppings = toppingsScreen();
         }
+
         System.out.println("Would you like to add extras?");
         String extrasAnswer = scanner.nextLine();
         if(extrasAnswer.equalsIgnoreCase("yes")) {
-            pokeBowlExtras = extrasScreen();
+            pokeBowlExtras = extrasScreen(pokeBowlToppings);
         }
+
         PokeBowl pokeBowl = new PokeBowl(name, base, sizeAnswer.toUpperCase());
+
         if(!pokeBowlToppings.isEmpty()) {
             for(Topping t : pokeBowlToppings) {
                 pokeBowl.addTopping(t);
             }
         }
+
         if(!pokeBowlExtras.isEmpty()) {
-            for(String s : pokeBowlExtras) {
-                pokeBowl.addExtra(s);
+            for(Extra e : pokeBowlExtras) {
+                pokeBowl.addExtra(e);
             }
         }
 
         return pokeBowl;
     }
+
 
     public static ArrayList<Topping> toppingsScreen() {
         ArrayList<Topping> list = new ArrayList<>();
@@ -164,20 +170,84 @@ public class CLI {
         return toppingChoice;
     }
 
-    public static ArrayList<String> extrasScreen() {
-        ArrayList<String> addedExtras = new ArrayList<>();
-        boolean picking = true;
-        while(picking) {
-            System.out.println("Add in your extras here: | Enter 'done' when done");
-            String ans = scanner.nextLine();
-            if(ans.equalsIgnoreCase("done")) {
-                break;
-            } else {
-                addedExtras.add(ans);
+    public static ArrayList<Extra> extrasScreen(ArrayList<Topping> selectedToppings) {
+        ArrayList<Extra> extraList = new ArrayList<>();
+
+        if(selectedToppings == null || selectedToppings.isEmpty()) {
+            System.out.println("No toppings selected, skipping extras.");
+            return extraList;
+        }
+
+        boolean hasPremium = false;
+        Topping firstPremium = null;
+
+        for(Topping t : selectedToppings) {
+            if(t.isPremium()) {
+                hasPremium = true;
+                if(firstPremium == null) {
+                    firstPremium = t;
+                }
             }
         }
-        return addedExtras;
+
+        if(hasPremium) {
+            System.out.println("Would you like extra meat (double protein) for +$2? | type yes or no");
+            String extraMeatAnswer = scanner.nextLine();
+            if(extraMeatAnswer.equalsIgnoreCase("yes")) {
+                Extra extraProtein = new Extra(firstPremium);
+                extraList.add(extraProtein);
+                System.out.printf("Added extra protein for $%.2f\n", extraProtein.getUpcharge());
+            }
+        }
+
+        System.out.println("Would you like extra toppings? (yes/no)");
+        String extraToppingsAnswer = scanner.nextLine();
+        if(extraToppingsAnswer.equalsIgnoreCase("yes")) {
+
+            System.out.println("Your available toppings for extras:");
+            for(Topping t : selectedToppings) {
+                Extra tempExtra = new Extra(t);
+                System.out.printf("%s (+$%.2f)\n", t.getName(), tempExtra.getUpcharge());
+            }
+
+            boolean picking = true;
+            while(picking) {
+                System.out.println("Enter topping name for an extra portion | Type 'done' when finished");
+                String answer = scanner.nextLine();
+
+                if(answer.equalsIgnoreCase("done")) {
+                    break;
+                } else {
+                    boolean found = false;
+                    for(Topping t : selectedToppings) {
+                        if(answer.equalsIgnoreCase(t.getName())) {
+                            Extra extra = new Extra(t);
+                            extraList.add(extra);
+                            System.out.printf("✓ Added extra %s (+$%.2f)\n",
+                                    t.getName(), extra.getUpcharge());
+                            found = true;
+                            break;
+                        }
+                    }
+                    if(found == false) {
+                        System.out.println("Not found, please try again.");
+                    }
+                }
+            }
+        }
+
+        if(!extraList.isEmpty()) {
+            System.out.println("\nHere are your extras:");
+            for(Extra e : extraList) {
+                System.out.println(e.getName());
+            }
+        }
+
+        return extraList;
     }
+
+
+
 
     public static ArrayList<Sides> sidesScreen() {
         ArrayList<Sides> list = new ArrayList<>();

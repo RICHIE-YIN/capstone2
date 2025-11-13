@@ -13,6 +13,9 @@ import java.util.Objects;
 public class Main {
 
     private static ToppingDAO toppingDAO = new ToppingDAO();
+    private static SidesDAO sidesDAO = new SidesDAO();
+    private static DrinksDAO drinksDAO = new DrinksDAO();
+    private static ExtraDAO extraDAO = new ExtraDAO();
     private static OrderDAO orderDAO = new OrderDAO();
 
     public static void main(String[] args) {
@@ -41,6 +44,31 @@ public class Main {
             }
         });
 
+        //get all sides
+        app.get("/api/sides", ctx -> {
+            try{
+                ArrayList<Sides> sides = sidesDAO.getAllSides();
+                ctx.json(sides);
+            } catch (Exception e) {
+                ctx.status(400);
+                ctx.json(Map.of("error", "failed to load sides"));
+                throw new RuntimeException(e);
+            }
+        });
+
+        //get all drinks
+        app.get("/api/drinks", ctx -> {
+            try{
+                ArrayList<Drink> drinks = drinksDAO.getAllDrinks();
+                ctx.json(drinks);
+            } catch (Exception e) {
+                ctx.status(400);
+                ctx.json(Map.of("error", "failed to load drinks"));
+                throw new RuntimeException(e);
+            }
+        });
+
+
         //order
         app.post("/api/orders", ctx -> {
             try{
@@ -68,9 +96,22 @@ public class Main {
                         if(topping != null) {
                             pokeBowl.addTopping(topping);
                         } else {
-                            System.out.println("topping not found");
+                            System.out.println("topping not found: " + toppingName);
                         }
                     }
+
+                    //add extras to bowl
+                    for(ExtraRequest extraReq : bowlReq.extras) {
+                        Topping topping = toppingDAO.getToppingByName(extraReq.toppingName);
+                        if(topping != null) {
+                            Extra extra = new Extra(topping);
+                            pokeBowl.addExtra(extra);
+                            System.out.println("Extra added: " + extra.getName());
+                        } else {
+                            System.out.println("topping not found for extra: " + extraReq.toppingName);
+                        }
+                    }
+
                     order.addItem(pokeBowl);
                 }
 
@@ -129,6 +170,11 @@ public class Main {
         public String base;
         public String size;
         public ArrayList<String> toppings = new ArrayList<>();
+        public ArrayList<ExtraRequest> extras = new ArrayList<>();  // ADDED THIS
+    }
+
+    public static class ExtraRequest {  // ADDED THIS CLASS
+        public String toppingName;
     }
 
     public static class DrinkRequest {
