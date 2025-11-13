@@ -1,0 +1,48 @@
+Funkin Poke!!! RECEIPT
+Date: Date: 2025-11-11 | Time: 18:14:14
+======================================
+Item: Richie's Bowl, Price: 26.00
+ Base: White Rice | Size: L
+  Toppings:
+   -Spicy Tuna
+   -Avocado
+   -Seaweed Salad
+   -Cucumber
+   -Green Onion
+   -Masago
+   -Spicy Mayo
+   -Eel Sauce
+   -Sesame Oil
+   -Wasabi Aioli
+   -Furikake
+   -Crispy Onions
+   -Tempura Flakes
+
+Item: Kayla's Bowl, Price: 20.13
+ Base: White Rice | Size: S
+  Toppings:
+   -Spicy Salmon
+   -Crab Mix
+   -Avocado
+   -Seaweed Salad
+   -Cucumber
+   -Green Onion
+   -Masago
+   -Spicy Mayo
+   -Eel Sauce
+   -Sesame Oil
+   -Sriracha
+
+Item: coke, Price: 4.00
+ Size: small| Flavor: coke
+
+Item: Edamame, Price: 2.50
+
+Item: Takoyaki, Price: 2.50
+
+======================================
+Subtotal:                $55.13
+Tax (7%):                $3.86
+--------------------------------------
+TOTAL:                   $58.98
+======================================

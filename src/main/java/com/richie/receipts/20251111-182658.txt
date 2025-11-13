@@ -1,0 +1,21 @@
+Funkin Poke!!! RECEIPT
+Date: Date: 2025-11-11 | Time: 18:26:58
+======================================
+Item: Richie's bowl, Price: 20.25
+ Base: White Rice | Size: L
+  Toppings:
+   -Spicy Tuna
+   -Spicy Mayo
+   -Eel Sauce
+
+Item: Pineapple Cubes, Price: 2.50
+
+Item: sparkling lychee water, Price: 4.00
+ Size: M| Flavor: sparkling lychee water
+
+======================================
+Subtotal:                $26.75
+Tax (7%):                $1.87
+--------------------------------------
+TOTAL:                   $28.62
+======================================

@@ -54,11 +54,11 @@ public class PokeBowl extends Product implements Customizable {
     @Override
     public double getPrice() {
         double total = 0;
-        if (size.equals("S")) {
+        if (size.equalsIgnoreCase("S")) {
             total = 9.50;
-        } else if (size.equals("M")) {
+        } else if (size.equalsIgnoreCase("M")) {
             total = 12.00;
-        } else if (size.equals("L")) {
+        } else if (size.equalsIgnoreCase("L")) {
             total = 15.50;
         }
 

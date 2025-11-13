@@ -19,7 +19,7 @@ public class CLI {
         boolean picking = true;
         while(picking) {
             System.out.println("Welcome to Funkin' Poke!");
-            System.out.println("Press 1 to order | Press 2 to quit");
+            System.out.println("Press 1 to order | Press 2 to quit or when you're finished");
             String answer = scanner.nextLine();
 
             if(answer.equalsIgnoreCase("1")) {
@@ -30,6 +30,7 @@ public class CLI {
                 picking = false;
                 for(Order o : orders) {
                     ReceiptFileManager.previewReceipt(o);
+                    ReceiptFileManager.saveReceipt(o);
                 }
             }
 
@@ -44,23 +45,23 @@ public class CLI {
             System.out.println("What would you like to order?");
             System.out.println("Press 1 for Entree | Press 2 for Sides | Press 3 for Drinks | Press 0 if done");
             String answer = scanner.nextLine();
-                if(answer.equalsIgnoreCase("1")) {
-                    PokeBowl pokeBowl = entreeScreen();
-                    order.addItem(pokeBowl);
-                } else if (answer.equalsIgnoreCase("2")) {
-                    ArrayList<Sides> side = sidesScreen();
-                    for(Sides s : side) {
-                        order.addItem(s);
-                    }
-                } else if (answer.equalsIgnoreCase("3")) {
-                    ArrayList<Drink> drinks = drinksScreen();
-                    for(Drink d : drinks) {
-                        order.addItem(d);
-                    }
-                } else if (answer.equalsIgnoreCase("0")) {
-                    picking = false;
+            if(answer.equalsIgnoreCase("1")) {
+                PokeBowl pokeBowl = entreeScreen();
+                order.addItem(pokeBowl);
+            } else if (answer.equalsIgnoreCase("2")) {
+                ArrayList<Sides> side = sidesScreen();
+                for(Sides s : side) {
+                    order.addItem(s);
                 }
+            } else if (answer.equalsIgnoreCase("3")) {
+                ArrayList<Drink> drinks = drinksScreen();
+                for(Drink d : drinks) {
+                    order.addItem(d);
+                }
+            } else if (answer.equalsIgnoreCase("0")) {
+                picking = false;
             }
+        }
         orders.add(order);
     }
 
@@ -220,7 +221,7 @@ public class CLI {
                         sidesChoice.add(s);
                         found = true;
                         break;
-                    } 
+                    }
                 }
                 if(found == false) {
                     System.out.println("Side not found, try again.");
