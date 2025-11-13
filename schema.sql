@@ -41,6 +41,7 @@ CREATE TABLE drinks (
 CREATE TABLE orders (
     id SERIAL PRIMARY KEY,
     customer_name VARCHAR(100) NOT NULL,
+    order_number VARCHAR(20) UNIQUE NOT NULL,
     subtotal DECIMAL(10, 2) NOT NULL,
     tax DECIMAL(10, 2) NOT NULL,
     total DECIMAL(10, 2) NOT NULL,

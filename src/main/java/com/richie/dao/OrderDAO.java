@@ -51,7 +51,7 @@ public class OrderDAO {
 
 
     public int saveOrder(Order order) {
-        String sqlOrderCommand = "INSERT INTO orders (customer_name, subtotal, tax, total) VALUES (?, ?, ?, ?) RETURNING id";
+        String sqlOrderCommand = "INSERT INTO orders (customer_name, order_number, subtotal, tax, total) " + "VALUES (?, ?, ?, ?, ?) RETURNING id";
         String sqlItemCommand = "INSERT INTO order_items (order_id, item_type, item_name, base, size, flavor, side_type, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
         String sqlToppingCommand = "INSERT INTO order_item_toppings (order_item_id, topping_id, price) VALUES (?, ?, ?)";
         String sqlExtraCommand = "INSERT INTO order_item_extras (order_item_id, topping_id, upcharge) VALUES (?, ?, ?)";
@@ -63,18 +63,23 @@ public class OrderDAO {
             conn.setAutoCommit(false);
 
             int orderId;
+            int tempId = getNextOrderNumber();
+            String orderNumber = String.format("F%04d", tempId);
 
             //save order
             try(PreparedStatement preparedStatement = conn.prepareStatement(sqlOrderCommand)){
                 preparedStatement.setString(1, order.getName());
-                preparedStatement.setDouble(2, order.getSubtotal());
-                preparedStatement.setDouble(3, order.getTax());
-                preparedStatement.setDouble(4, order.getTotal());
+                preparedStatement.setString(2, orderNumber);
+                preparedStatement.setDouble(3, order.getSubtotal());
+                preparedStatement.setDouble(4, order.getTax());
+                preparedStatement.setDouble(5, order.getTotal());
 
                 ResultSet rs = preparedStatement.executeQuery();
                 rs.next();
                 orderId = rs.getInt("id");
-                System.out.println("Order saved: ID = " + orderId);
+                order.setId(orderId);
+                order.setOrderNumber(orderNumber);
+                System.out.println("Order saved: ID=" + orderId + " | Number=" + orderNumber);
             }
 
             //save items
@@ -177,5 +182,23 @@ public class OrderDAO {
                 }
             }
         }
+    }
+
+    private int getNextOrderNumber() {
+        String sql = "SELECT COALESCE(MAX(id), 0) + 1 FROM orders";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error getting next order number: " + e.getMessage());
+        }
+
+        return 1;
     }
 }

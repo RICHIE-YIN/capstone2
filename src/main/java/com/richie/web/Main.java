@@ -131,14 +131,16 @@ public class Main {
                 int orderId = orderDAO.saveOrder(order);
                 if(orderId > 0) {
                     Map<String, Object> resp = new HashMap<>();
-                    resp.put("Success", true);
+                    resp.put("success", true);
                     resp.put("orderId", orderId);
+                    resp.put("orderNumber", order.getOrderNumber());
                     resp.put("customerName", order.getName());
                     resp.put("subtotal", order.getSubtotal());
                     resp.put("tax", order.getTax());
                     resp.put("total", order.getTotal());
+                    resp.put("receipt", formatReceipt(order));
 
-                    ctx.status(201); //created status
+                    ctx.status(201);
                     ctx.json(resp);
                 } else {
                     ctx.status(500);
@@ -184,5 +186,58 @@ public class Main {
 
     public static class SideRequest {
         public String type;
+    }
+
+    private static String formatReceipt(Order order) {
+        StringBuilder receipt = new StringBuilder();
+
+        receipt.append("======================================\n");
+        receipt.append("         FUNKIN POKE RECEIPT          \n");
+        receipt.append("======================================\n");
+        receipt.append(String.format("Order #: %s\n", order.getOrderNumber()));
+        receipt.append(String.format("Customer: %s\n", order.getName()));
+        receipt.append("======================================\n\n");
+
+        for(Product p : order.getProducts()) {
+            receipt.append(String.format("Item: %s\nPrice: $%.2f\n", p.getName(), p.getPrice()));
+
+            if(p instanceof PokeBowl) {
+                PokeBowl pokeBowl = (PokeBowl) p;
+                receipt.append(String.format(" Base: %s | Size: %s\n", pokeBowl.getBase(), pokeBowl.getSize()));
+
+                if(!pokeBowl.getToppings().isEmpty()) {
+                    receipt.append("  Toppings:\n");
+                    for(Topping t : pokeBowl.getToppings()) {
+                        receipt.append(String.format("   - %s\n", t.getName()));
+                    }
+                }
+
+                if(pokeBowl.hasExtras()) {
+                    receipt.append("  Extras:\n");
+                    for(Extra e : pokeBowl.getExtras()) {
+                        receipt.append(String.format("   - %s: +$%.2f\n", e.getName(), e.getUpcharge()));
+                    }
+                }
+
+            } else if (p instanceof Drink) {
+                Drink d = (Drink) p;
+                receipt.append(String.format(" Size: %s | Flavor: %s\n", d.getSize(), d.getFlavor()));
+
+            } else if (p instanceof Sides) {
+                Sides s = (Sides) p;
+                receipt.append(String.format(" Type: %s\n", s.getType()));
+            }
+
+            receipt.append("\n");
+        }
+
+        receipt.append("======================================\n");
+        receipt.append(String.format("Subtotal:                 $%.2f\n", order.getSubtotal()));
+        receipt.append(String.format("Tax (7%%):                 $%.2f\n", order.getTax()));
+        receipt.append("--------------------------------------\n");
+        receipt.append(String.format("TOTAL:                    $%.2f\n", order.getTotal()));
+        receipt.append("======================================\n");
+
+        return receipt.toString();
     }
 }

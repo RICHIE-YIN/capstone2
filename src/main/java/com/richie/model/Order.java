@@ -5,6 +5,9 @@ public class Order implements Taxable {
     private ArrayList<Product> items;
     private String name;
 
+    private Integer id;
+    private String orderNumber;
+
     public Order(String name) {
         this.name = name;
         this.items = new ArrayList<>();
@@ -52,5 +55,25 @@ public class Order implements Taxable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getOrderNumber() {
+        return orderNumber;
+    }
+
+    public void setOrderNumber(String orderNumber) {
+        this.orderNumber = orderNumber;
+    }
+
+    public ArrayList<Product> getProducts() {
+        return items;
     }
 }
