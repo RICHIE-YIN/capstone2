@@ -1,5 +1,7 @@
 const app = {
-    baseApiUrl: "http://localhost:8080",
+    // Use the same origin as whatever domain is serving the page
+    // e.g. https://www.richiespoke.org or http://localhost:8080
+    baseApiUrl: window.location.origin || "",
 
     lastReceiptText: null,
     lastReceiptFileName: null,
@@ -117,9 +119,9 @@ const app = {
     async loadInitialData() {
         try {
             const [tRes, dRes, sRes] = await Promise.all([
-                fetch(this.baseApiUrl + '/api/toppings'),
-                fetch(this.baseApiUrl + '/api/drinks'),
-                fetch(this.baseApiUrl + '/api/sides')
+                fetch(`${this.baseApiUrl}/api/toppings`),
+                fetch(`${this.baseApiUrl}/api/drinks`),
+                fetch(`${this.baseApiUrl}/api/sides`)
             ]);
 
             // Toppings: backend sends { name, price, premium }
@@ -564,7 +566,7 @@ const app = {
         const payload = this.buildOrderRequest();
 
         try {
-            const response = await fetch(this.baseApiUrl + '/api/orders', {
+            const response = await fetch(`${this.baseApiUrl}/api/orders`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -723,46 +725,46 @@ const app = {
     },
 
     generateReceipt(apiOrder) {
-            const now = new Date();
+        const now = new Date();
 
-            // text & filename from backend
-            this.lastReceiptText = apiOrder && apiOrder.receipt
-                ? apiOrder.receipt
-                : 'Funkin Poke Receipt\n\n(Receipt text not available)';
+        // text & filename from backend
+        this.lastReceiptText = apiOrder && apiOrder.receipt
+            ? apiOrder.receipt
+            : 'Funkin Poke Receipt\n\n(Receipt text not available)';
 
-            this.lastReceiptFileName = apiOrder && apiOrder.receiptFileName
-                ? apiOrder.receiptFileName
-                : null;
+        this.lastReceiptFileName = apiOrder && apiOrder.receiptFileName
+            ? apiOrder.receiptFileName
+            : null;
 
-            const receiptNumber = apiOrder && apiOrder.orderNumber
-                ? apiOrder.orderNumber
-                : now.getTime().toString().slice(-8);
+        const receiptNumber = apiOrder && apiOrder.orderNumber
+            ? apiOrder.orderNumber
+            : now.getTime().toString().slice(-8);
 
-            const receiptDate = now.toLocaleString();
-            const totalFromApi = apiOrder && typeof apiOrder.total === 'number'
-                ? apiOrder.total
-                : this.calculateOrderTotal();
+        const receiptDate = now.toLocaleString();
+        const totalFromApi = apiOrder && typeof apiOrder.total === 'number'
+            ? apiOrder.total
+            : this.calculateOrderTotal();
 
-            document.getElementById('receiptNumber').textContent = receiptNumber;
-            document.getElementById('receiptDate').textContent = receiptDate;
-            document.getElementById('receiptTotal').textContent = totalFromApi.toFixed(2);
+        document.getElementById('receiptNumber').textContent = receiptNumber;
+        document.getElementById('receiptDate').textContent = receiptDate;
+        document.getElementById('receiptTotal').textContent = totalFromApi.toFixed(2);
 
-            const receiptItemsList = document.getElementById('receiptItemsList');
-            receiptItemsList.innerHTML = this.currentOrder.map(item => {
-                if (item.type === 'bowl') {
-                    const toppingsList = item.toppings.map(t =>
-                        `${t.name} ${t.premium ? '(Premium)' : ''}`
-                    ).join(', ');
+        const receiptItemsList = document.getElementById('receiptItemsList');
+        receiptItemsList.innerHTML = this.currentOrder.map(item => {
+            if (item.type === 'bowl') {
+                const toppingsList = item.toppings.map(t =>
+                    `${t.name} ${t.premium ? '(Premium)' : ''}`
+                ).join(', ');
 
-                    const extras = [];
-                    if (item.extraMeat) extras.push('Extra Meat (+$2.00)');
-                    if (item.extraToppings.length > 0) {
-                        extras.push(
-                            `Extra Toppings: ${item.extraToppings.join(', ')} (+$${(item.extraToppings.length * 0.50).toFixed(2)})`
-                        );
-                    }
+                const extras = [];
+                if (item.extraMeat) extras.push('Extra Meat (+$2.00)');
+                if (item.extraToppings.length > 0) {
+                    extras.push(
+                        `Extra Toppings: ${item.extraToppings.join(', ')} (+$${(item.extraToppings.length * 0.50).toFixed(2)})`
+                    );
+                }
 
-                    return `
+                return `
                         <div class="receipt-item">
                             <h4>Poke Bowl - ${item.size.charAt(0).toUpperCase() + item.size.slice(1)} - $${item.price.toFixed(2)}</h4>
                             <div class="receipt-details">
@@ -772,22 +774,21 @@ const app = {
                             </div>
                         </div>
                     `;
-                } else if (item.type === 'drink') {
-                    return `
+            } else if (item.type === 'drink') {
+                return `
                         <div class="receipt-item">
                             <h4>${item.flavor} - ${item.size.charAt(0).toUpperCase() + item.size.slice(1)} - $${item.price.toFixed(2)}</h4>
                         </div>
                     `;
-                } else if (item.type === 'side') {
-                    return `
+            } else if (item.type === 'side') {
+                return `
                         <div class="receipt-item">
                             <h4>${item.name} - $${item.price.toFixed(2)}</h4>
                         </div>
                     `;
-                }
-            }).join('');
-        },
-
+            }
+        }).join('');
+    },
 
     downloadReceipt() {
         const text = this.lastReceiptText || 'Funkin Poke Receipt\n\n(No receipt available.)';

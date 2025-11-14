@@ -44,7 +44,7 @@ public class Main {
             });
         }).start(port);
 
-        app.get("/", ctx -> ctx.redirect("/public/index.html"));
+        app.get("/", ctx -> ctx.redirect("/index.html"));
 
 
         app.get("/api/health", ctx -> ctx.json(Map.of("status", "healthy")));
