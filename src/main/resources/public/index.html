@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Poke Spot - Order Kiosk</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+<div class="notification" id="notification"></div>
+
+<div class="container">
+    <div class="header">
+        <div class="header-content">
+<!--            <img src="" alt="The Poke Spot Logo" class="header-logo" id="headerLogo">-->
+<!--            <h1>THE POKE SPOT</h1>-->
+            <p class="header-letter">Welcome to The Poke Spot!</p>
+        </div>
+    </div>
+
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="screen active">
+        <div class="welcome-screen">
+            <!-- <img src="images/logo.png" width="700"> -->
+            <p>Create your custom poke bowl with fresh ingredients, refreshing drinks, and tasty sides</p>
+            <button class="btn" onclick="app.startOrder()">Start New Order</button>
+        </div>
+    </div>
+
+    <!-- Menu Selection Screen -->
+    <div id="menuScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            What would you like to add?
+        </h2>
+
+        <div class="menu-options">
+            <div class="menu-card" onclick="app.selectMenuItem('signature')">
+                <h3>🌟 Signature Bowls</h3>
+                <p>Chef's special creations ready to go</p>
+                <div class="price">$15.00 - $25.00</div>
+            </div>
+
+            <div class="menu-card" onclick="app.selectMenuItem('bowl')">
+                <h3>Custom Poke Bowl</h3>
+                <p>Build your custom bowl with fresh ingredients</p>
+                <div class="price">From $9.50</div>
+            </div>
+
+            <div class="menu-card" onclick="app.selectMenuItem('drink')">
+                <h3>Drinks</h3>
+                <p>Refreshing beverages to complement your meal</p>
+                <div class="price">From $4.00</div>
+            </div>
+
+            <div class="menu-card" onclick="app.selectMenuItem('side')">
+                <h3>Sides</h3>
+                <p>Delicious sides to complete your order</p>
+                <div class="price">$2.50 each</div>
+            </div>
+        </div>
+
+        <!-- Current Order Summary -->
+        <div class="order-summary">
+            <h3>Current Order (<span id="itemCount">0</span> items)</h3>
+            <div id="orderItemsList" class="order-items">
+                <div class="empty-order">
+                    <span style="font-size: 4em;">🛒</span>
+                    <p>Your order is empty. Add some items!</p>
+                </div>
+            </div>
+            <div class="total-section">
+                <h3>Order Total</h3>
+                <div class="total-amount">$<span id="orderTotal">0.00</span></div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-outline" onclick="app.cancelOrder()">Cancel Order</button>
+            <button class="btn btn-success" onclick="app.checkout()" id="checkoutBtn" disabled>
+                Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Signature Bowls Screen -->
+    <div id="signatureScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            🌟 Signature Bowls
+        </h2>
+
+        <div class="signature-bowls-grid">
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Richie Special')">
+                <div class="signature-badge">STAFF FAVORITE</div>
+                <h3>Richie Special</h3>
+                <p class="signature-description">Spicy tuna perfection with all the fixings</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> White Rice<br>
+                    <strong>Size:</strong> Large<br>
+                    <strong>Includes:</strong> Spicy Tuna, Avocado, Seaweed Salad, Cucumber, Green Onion, Masago, Spicy Mayo, Eel Sauce, Furikake, Crispy Onions, Tempura Flakes
+                </div>
+                <div class="price">$25.00</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Hawaiian Classic')">
+                <div class="signature-badge">CLASSIC</div>
+                <h3>Hawaiian Classic</h3>
+                <p class="signature-description">Traditional island flavors with fresh salmon</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> White Rice<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Salmon, Crab Mix, Avocado, Cucumber, Mango, Green Onion, Sesame Oil, Ponzu Sauce, Furikake
+                </div>
+                <div class="price">$20.38</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Spicy Volcano')">
+                <div class="signature-badge">🔥 SPICY</div>
+                <h3>Spicy Volcano</h3>
+                <p class="signature-description">Heat lovers delight with spicy salmon and shrimp</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> Brown Rice<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Spicy Salmon, Shrimp, Jalapeño, Masago, Green Onion, Sriracha, Spicy Mayo, Tempura Flakes
+                </div>
+                <div class="price">$20.63</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Veggie Zen')">
+                <div class="signature-badge">🌱 VEGAN</div>
+                <h3>Veggie Zen</h3>
+                <p class="signature-description">Plant-based harmony with tofu and fresh veggies</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> Mixed Salad<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Tofu, Avocado, Cucumber, Seaweed Salad, Pickled Ginger, Sesame Oil, Ponzu Sauce, Furikake, Crispy Onions
+                </div>
+                <div class="price">$17.75</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+        </div>
+
+        <div class="action-buttons" style="margin-top: 40px;">
+            <button class="btn btn-outline" onclick="app.backToMenu()">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Bowl Builder Screen -->
+    <div id="bowlScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            Build Your Poke Bowl
+        </h2>
+
+        <!-- Size Selection -->
+        <div class="builder-section">
+            <h3>Step 1: Choose Your Size</h3>
+            <div class="size-selector">
+                <div class="size-option" onclick="app.selectSize('small', 9.50)">
+                    <div class="size-name">Small</div>
+                    <div class="size-price">$9.50</div>
+                </div>
+                <div class="size-option" onclick="app.selectSize('medium', 12.00)">
+                    <div class="size-name">Medium</div>
+                    <div class="size-price">$12.00</div>
+                </div>
+                <div class="size-option" onclick="app.selectSize('large', 15.50)">
+                    <div class="size-name">Large</div>
+                    <div class="size-price">$15.50</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Base Selection -->
+        <div class="builder-section">
+            <h3>Step 2: Choose Your Base</h3>
+            <div class="options-grid">
+                <button class="option-btn" onclick="app.selectBase('Nothing')">No Base</button>
+                <button class="option-btn" onclick="app.selectBase('White Rice')">White Rice</button>
+                <button class="option-btn" onclick="app.selectBase('Brown Rice')">Brown Rice</button>
+                <button class="option-btn" onclick="app.selectBase('Mixed Salad')">Mixed Salad</button>
+            </div>
+        </div>
+
+        <!-- Toppings Selection -->
+        <div class="builder-section">
+            <h3>Step 3: Select Your Toppings</h3>
+            <p style="margin-bottom: 15px; color: var(--text-dark);">
+                Premium toppings are 1.5x price! Choose as many as you like!
+            </p>
+            <div class="toppings-grid" id="toppingsList"></div>
+        </div>
+
+        <!-- Extra Meat -->
+        <div class="builder-section">
+            <h3>Step 4: Extra Meat? (+$2.00)</h3>
+            <div class="options-grid">
+                <button class="option-btn" onclick="app.toggleExtraMeat(true)">Yes, Extra Meat!</button>
+                <button class="option-btn selected" onclick="app.toggleExtraMeat(false)">No Thanks</button>
+            </div>
+        </div>
+
+        <!-- Extra Toppings -->
+        <div class="builder-section">
+            <h3>Step 5: Extra Non-Premium Toppings? (+$0.50 each)</h3>
+            <p style="margin-bottom: 15px; color: var(--text-dark);">
+                Select any additional non-premium toppings you'd like extra of
+            </p>
+            <div class="toppings-grid" id="extraToppingsList"></div>
+        </div>
+
+        <!-- Current Bowl Price -->
+        <div class="total-section" style="margin-bottom: 30px;">
+            <h3>Current Bowl Price</h3>
+            <div class="total-amount">$<span id="currentBowlPrice">0.00</span></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-outline" onclick="app.backToMenu()">Back to Menu</button>
+            <button class="btn btn-success" onclick="app.addBowlToOrder()">Add to Order</button>
+        </div>
+    </div>
+
+    <!-- Drink Builder Screen -->
+    <div id="drinkScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            Choose Your Drink
+        </h2>
+
+        <!-- Size Selection -->
+        <div class="builder-section">
+            <h3>Choose Your Size</h3>
+            <div class="size-selector">
+                <div class="size-option" onclick="app.selectDrinkSize('small', 4.00)">
+                    <div class="size-name">Small</div>
+                    <div class="size-price">$4.00</div>
+                </div>
+                <div class="size-option" onclick="app.selectDrinkSize('medium', 6.00)">
+                    <div class="size-name">Medium</div>
+                    <div class="size-price">$6.00</div>
+                </div>
+                <div class="size-option" onclick="app.selectDrinkSize('large', 8.00)">
+                    <div class="size-name">Large</div>
+                    <div class="size-price">$8.00</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Flavor Selection -->
+        <div class="builder-section">
+            <h3>Choose Your Flavor</h3>
+            <div class="drink-flavors options-grid" id="drinkFlavorsList"></div>
+        </div>
+
+        <!-- Current Drink Price -->
+        <div class="total-section" style="margin-bottom: 30px;">
+            <h3>Current Drink Price</h3>
+            <div class="total-amount">$<span id="currentDrinkPrice">0.00</span></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-outline" onclick="app.backToMenu()">Back to Menu</button>
+            <button class="btn btn-success" onclick="app.addDrinkToOrder()">Add to Order</button>
+        </div>
+    </div>
+
+    <!-- Side Builder Screen -->
+    <div id="sideScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            Choose Your Side
+        </h2>
+
+        <div class="builder-section">
+            <h3>All Sides - $2.50 each</h3>
+            <div class="options-grid" id="sidesList"></div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-outline" onclick="app.backToMenu()">Back to Menu</button>
+        </div>
+    </div>
+
+    <!-- Receipt Screen -->
+    <div id="receiptScreen" class="screen">
+        <div class="receipt">
+            <div class="receipt-header">
+                <img src="images/logo.png" width="4000" alt="The Poke Spot Logo" class="receipt-logo" id="receiptLogo">
+                <h2>THE POKE SPOT</h2>
+                <p>Thank you for your order!</p>
+                <p style="font-size: 0.9em; margin-top: 10px;">
+                    Order #<span id="receiptNumber"></span>
+                </p>
+                <p style="font-size: 0.9em;">
+                    <span id="receiptDate"></span>
+                </p>
+            </div>
+
+            <div class="receipt-items" id="receiptItemsList"></div>
+
+            <div class="receipt-total">
+                <h3>Total Amount</h3>
+                <div class="amount">$<span id="receiptTotal">0.00</span></div>
+            </div>
+
+            <div class="receipt-footer">
+                <p><strong>Your order will be ready shortly!</strong></p>
+                <p>Please save this receipt for pickup</p>
+            </div>
+        </div>
+
+        <div class="action-buttons" style="margin-top: 40px;">
+            <button class="btn btn-success" onclick="app.downloadReceipt()">
+                Download Receipt
+            </button>
+            <button class="btn" onclick="app.startNewOrder()">Start New Order</button>
+        </div>
+
+    </div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

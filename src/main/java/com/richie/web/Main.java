@@ -7,8 +7,6 @@ import com.richie.dao.*;
 import com.richie.model.*;
 import io.javalin.http.staticfiles.Location;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -40,13 +38,13 @@ public class Main {
             config.http.defaultContentType = "application/json";
 
             config.staticFiles.add(staticFiles -> {
-                staticFiles.hostedPath = "/";       // URL prefix
-                staticFiles.directory = "public";   // folder relative to working dir
-                staticFiles.location = Location.EXTERNAL;
+                staticFiles.hostedPath = "/";        // URL prefix
+                staticFiles.directory = "/public";   // folder on the classpath
+                staticFiles.location = Location.CLASSPATH;
             });
         }).start(port);
 
-        app.get("/", ctx -> ctx.redirect("/index.html"));
+        app.get("/", ctx -> ctx.redirect("/public/index.html"));
 
 
         app.get("/api/health", ctx -> ctx.json(Map.of("status", "healthy")));
