@@ -35,8 +35,14 @@
         </h2>
 
         <div class="menu-options">
+            <div class="menu-card" onclick="app.selectMenuItem('signature')">
+                <h3>🌟 Signature Bowls</h3>
+                <p>Chef's special creations ready to go</p>
+                <div class="price">$15.00 - $25.00</div>
+            </div>
+
             <div class="menu-card" onclick="app.selectMenuItem('bowl')">
-                <h3>Poke Bowl</h3>
+                <h3>Custom Poke Bowl</h3>
                 <p>Build your custom bowl with fresh ingredients</p>
                 <div class="price">From $9.50</div>
             </div>
@@ -74,6 +80,71 @@
             <button class="btn btn-success" onclick="app.checkout()" id="checkoutBtn" disabled>
                 Proceed to Checkout
             </button>
+        </div>
+    </div>
+
+    <!-- Signature Bowls Screen -->
+    <div id="signatureScreen" class="screen">
+        <h2 style="text-align: center; color: var(--text-dark); margin-bottom: 40px; font-size: 2.2em; font-weight: 700; letter-spacing: 1px;">
+            🌟 Signature Bowls
+        </h2>
+
+        <div class="signature-bowls-grid">
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Richie Special')">
+                <div class="signature-badge">STAFF FAVORITE</div>
+                <h3>Richie Special</h3>
+                <p class="signature-description">Spicy tuna perfection with all the fixings</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> White Rice<br>
+                    <strong>Size:</strong> Large<br>
+                    <strong>Includes:</strong> Spicy Tuna, Avocado, Seaweed Salad, Cucumber, Green Onion, Masago, Spicy Mayo, Eel Sauce, Furikake, Crispy Onions, Tempura Flakes
+                </div>
+                <div class="price">$25.00</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Hawaiian Classic')">
+                <div class="signature-badge">CLASSIC</div>
+                <h3>Hawaiian Classic</h3>
+                <p class="signature-description">Traditional island flavors with fresh salmon</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> White Rice<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Salmon, Crab Mix, Avocado, Cucumber, Mango, Green Onion, Sesame Oil, Ponzu Sauce, Furikake
+                </div>
+                <div class="price">$20.38</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Spicy Volcano')">
+                <div class="signature-badge">🔥 SPICY</div>
+                <h3>Spicy Volcano</h3>
+                <p class="signature-description">Heat lovers delight with spicy salmon and shrimp</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> Brown Rice<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Spicy Salmon, Shrimp, Jalapeño, Masago, Green Onion, Sriracha, Spicy Mayo, Tempura Flakes
+                </div>
+                <div class="price">$20.63</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+
+            <div class="signature-bowl-card" onclick="app.selectSignatureBowl('Veggie Zen')">
+                <div class="signature-badge">🌱 VEGAN</div>
+                <h3>Veggie Zen</h3>
+                <p class="signature-description">Plant-based harmony with tofu and fresh veggies</p>
+                <div class="signature-details">
+                    <strong>Base:</strong> Mixed Salad<br>
+                    <strong>Size:</strong> Medium<br>
+                    <strong>Includes:</strong> Tofu, Avocado, Cucumber, Seaweed Salad, Pickled Ginger, Sesame Oil, Ponzu Sauce, Furikake, Crispy Onions
+                </div>
+                <div class="price">$17.75</div>
+                <button class="btn btn-success" style="margin-top: 20px; width: 100%;">Add to Order</button>
+            </div>
+        </div>
+
+        <div class="action-buttons" style="margin-top: 40px;">
+            <button class="btn btn-outline" onclick="app.backToMenu()">Back to Menu</button>
         </div>
     </div>
 
@@ -117,7 +188,7 @@
         <div class="builder-section">
             <h3>Step 3: Select Your Toppings</h3>
             <p style="margin-bottom: 15px; color: var(--text-dark);">
-                â­ Premium toppings are 1.5x price â€¢ Choose as many as you like!
+                Premium toppings are 1.5x price! Choose as many as you like!
             </p>
             <div class="toppings-grid" id="toppingsList"></div>
         </div>
@@ -215,7 +286,7 @@
     <div id="receiptScreen" class="screen">
         <div class="receipt">
             <div class="receipt-header">
-                <img src="" alt="The Poke Spot Logo" class="receipt-logo" id="receiptLogo">
+                <img src="images/logo.png" width="4000" alt="The Poke Spot Logo" class="receipt-logo" id="receiptLogo">
                 <h2>THE POKE SPOT</h2>
                 <p>Thank you for your order!</p>
                 <p style="font-size: 0.9em; margin-top: 10px;">

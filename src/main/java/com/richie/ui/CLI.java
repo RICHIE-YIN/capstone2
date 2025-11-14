@@ -1,6 +1,7 @@
 package com.richie.ui;
 
 import com.richie.model.*;
+import com.richie.util.OrderValidator;
 import com.richie.util.ReceiptFileManager;
 
 import java.util.ArrayList;
@@ -17,23 +18,22 @@ public class CLI {
 
     public static void mainScreen() {
         boolean picking = true;
-        while(picking) {
+        while (picking) {
             System.out.println("Welcome to Funkin' Poke!");
             System.out.println("Press 1 to order | Press 2 to quit or when you're finished");
             String answer = scanner.nextLine();
 
-            if(answer.equalsIgnoreCase("1")) {
+            if (answer.equalsIgnoreCase("1")) {
                 System.out.println("What is the name for your order?");
                 String orderName = scanner.nextLine();
                 menuScreen(orderName);
             } else {
                 picking = false;
-                for(Order o : orders) {
+                for (Order o : orders) {
                     ReceiptFileManager.previewReceipt(o);
                     ReceiptFileManager.saveReceipt(o);
                 }
             }
-
         }
     }
 
@@ -41,31 +41,64 @@ public class CLI {
         Order order = new Order(orderName);
         boolean picking = true;
 
-        while(picking) {
-            System.out.println("What would you like to order?");
-            System.out.println("Press 1 for Entree | Press 2 for Sides | Press 3 for Drinks | Press 0 if done");
-            String answer = scanner.nextLine();
-            if(answer.equalsIgnoreCase("1")) {
-                PokeBowl pokeBowl = entreeScreen();
-                order.addItem(pokeBowl);
-            } else if (answer.equalsIgnoreCase("2")) {
-                ArrayList<Sides> side = sidesScreen();
-                for(Sides s : side) {
-                    order.addItem(s);
-                }
-            } else if (answer.equalsIgnoreCase("3")) {
-                ArrayList<Drink> drinks = drinksScreen();
-                for(Drink d : drinks) {
-                    order.addItem(d);
-                }
-            } else if (answer.equalsIgnoreCase("0")) {
-                picking = false;
+        while (picking) {
+            System.out.println("\nWhat would you like to order?");
+            System.out.println("1 = Entree");
+            System.out.println("2 = Sides");
+            System.out.println("3 = Drinks");
+            System.out.println("0 = Finish Order");
+            System.out.println("9 = Cancel Order");
+
+            String answer = scanner.nextLine().trim();
+
+            switch (answer) {
+                case "1":
+                    PokeBowl pokeBowl = entreeScreen();
+                    order.addItem(pokeBowl);
+                    break;
+
+                case "2":
+                    for (Sides s : sidesScreen()) {
+                        order.addItem(s);
+                    }
+                    break;
+
+                case "3":
+                    for (Drink d : drinksScreen()) {
+                        order.addItem(d);
+                    }
+                    break;
+
+                case "0":
+                    picking = false;
+                    break;
+
+                case "9":
+                    System.out.println("\norder cancelled. returning to main menu");
+                    return;
             }
         }
+
+        if (!OrderValidator.isValid(order)) {
+            System.out.println("\ninvalid order. must order at least a bowl, drink, or side.");
+            System.out.println("Order not saved.\n");
+            return;
+        }
+
         orders.add(order);
+        System.out.println("\norder saved for: " + orderName + "\n");
     }
 
+
     public static PokeBowl entreeScreen() {
+        System.out.println("What kind of bowl would you like?");
+        System.out.println("press 1 for Signature Bowl (10% off) | press 2 for Custom Bowl");
+        String bowlTypeAnswer = scanner.nextLine();
+
+        if (bowlTypeAnswer.equalsIgnoreCase("1")) {
+            return signatureBowlScreen();
+        }
+
         ArrayList<Topping> pokeBowlToppings = new ArrayList<>();
         ArrayList<Extra> pokeBowlExtras = new ArrayList<>();
 
@@ -75,39 +108,174 @@ public class CLI {
         String base = scanner.nextLine();
         System.out.println("What size would you like? | S, M, or L");
         String sizeAnswer = scanner.nextLine();
-        if(!(sizeAnswer.equalsIgnoreCase("s") || sizeAnswer.equalsIgnoreCase("m") || sizeAnswer.equalsIgnoreCase("l"))) {
+        if (!(sizeAnswer.equalsIgnoreCase("s") ||
+                sizeAnswer.equalsIgnoreCase("m") ||
+                sizeAnswer.equalsIgnoreCase("l"))) {
             System.out.println("Invalid size, defaulting to Medium.");
             sizeAnswer = "M";
         }
 
         System.out.println("Would you like to add toppings?");
         String toppingsAnswer = scanner.nextLine();
-        if(toppingsAnswer.equalsIgnoreCase("yes")) {
+        if (toppingsAnswer.equalsIgnoreCase("yes")) {
             pokeBowlToppings = toppingsScreen();
         }
 
         System.out.println("Would you like to add extras?");
         String extrasAnswer = scanner.nextLine();
-        if(extrasAnswer.equalsIgnoreCase("yes")) {
+        if (extrasAnswer.equalsIgnoreCase("yes")) {
             pokeBowlExtras = extrasScreen(pokeBowlToppings);
         }
 
         PokeBowl pokeBowl = new PokeBowl(name, base, sizeAnswer.toUpperCase());
 
-        if(!pokeBowlToppings.isEmpty()) {
-            for(Topping t : pokeBowlToppings) {
+        if (!pokeBowlToppings.isEmpty()) {
+            for (Topping t : pokeBowlToppings) {
                 pokeBowl.addTopping(t);
             }
         }
 
-        if(!pokeBowlExtras.isEmpty()) {
-            for(Extra e : pokeBowlExtras) {
+        if (!pokeBowlExtras.isEmpty()) {
+            for (Extra e : pokeBowlExtras) {
                 pokeBowl.addExtra(e);
             }
         }
 
         return pokeBowl;
     }
+
+    public static PokeBowl signatureBowlScreen() {
+        // Build toppings library just for signatures
+        Topping salmon = new Topping("Salmon", 2.00, true);
+        Topping tuna = new Topping("Tuna", 2.25, true);
+        Topping spicyTuna = new Topping("Spicy Tuna", 2.50, true);
+        Topping spicySalmon = new Topping("Spicy Salmon", 2.50, true);
+        Topping shrimp = new Topping("Shrimp", 1.75, true);
+        Topping tofu = new Topping("Tofu", 1.00, true);
+        Topping crabMix = new Topping("Crab Mix", 1.25, true);
+        Topping avocado = new Topping("Avocado", 1.00, true);
+        Topping seaweedSalad = new Topping("Seaweed Salad", 0.75, false);
+        Topping cucumber = new Topping("Cucumber", 0.25, false);
+        Topping mango = new Topping("Mango", 0.50, false);
+        Topping greenOnion = new Topping("Green Onion", 0.25, false);
+        Topping masago = new Topping("Masago", 0.75, false);
+        Topping pickledGinger = new Topping("Pickled Ginger", 0.25, false);
+        Topping jalapeno = new Topping("Jalapeño", 0.25, false);
+        Topping nori = new Topping("Nori", 0.10, false);
+        Topping spicyMayo = new Topping("Spicy Mayo", 0.50, false);
+        Topping eelSauce = new Topping("Eel Sauce", 0.50, false);
+        Topping ponzuSauce = new Topping("Ponzu Sauce", 0.50, false);
+        Topping sesameOil = new Topping("Sesame Oil", 0.25, false);
+        Topping yuzuDressing = new Topping("Yuzu Dressing", 0.50, false);
+        Topping wasabiAioli = new Topping("Wasabi Aioli", 0.75, false);
+        Topping sriracha = new Topping("Sriracha", 0.25, false);
+        Topping furikake = new Topping("Furikake", 0.25, false);
+        Topping crispyOnions = new Topping("Crispy Onions", 0.50, false);
+        Topping tempuraFlakes = new Topping("Tempura Flakes", 0.50, false);
+
+        System.out.println("\nSignature Bowls (10% off):");
+        System.out.println("1) Richie Special  - L | White Rice");
+        System.out.println("   Spicy Tuna, Avocado, Seaweed Salad, Cucumber, Green Onion, Masago,");
+        System.out.println("   Spicy Mayo, Eel Sauce, Furikake, Crispy Onions, Tempura Flakes");
+        System.out.println();
+        System.out.println("2) Hawaiian Classic - M | White Rice");
+        System.out.println("   Salmon, Crab Mix, Avocado, Cucumber, Mango, Green Onion,");
+        System.out.println("   Sesame Oil, Ponzu Sauce, Furikake");
+        System.out.println();
+        System.out.println("3) Spicy Volcano - M | Brown Rice");
+        System.out.println("   Spicy Salmon, Shrimp, Jalapeño, Masago, Green Onion,");
+        System.out.println("   Sriracha, Spicy Mayo, Tempura Flakes");
+        System.out.println();
+        System.out.println("4) Veggie Zen - M | Mixed Greens");
+        System.out.println("   Tofu, Avocado, Cucumber, Seaweed Salad, Pickled Ginger,");
+        System.out.println("   Sesame Oil, Ponzu Sauce, Furikake, Crispy Onions");
+        System.out.println();
+
+        System.out.println("Pick a Signature Bowl (1-4):");
+        String answer = scanner.nextLine();
+
+        SignaturePokeBowl bowl;
+
+        switch (answer) {
+            case "1":
+                bowl = new SignaturePokeBowl("Richie Special", "White Rice", "L", "Richie Special");
+                bowl.addTopping(spicyTuna);
+                bowl.addTopping(avocado);
+                bowl.addTopping(seaweedSalad);
+                bowl.addTopping(cucumber);
+                bowl.addTopping(greenOnion);
+                bowl.addTopping(masago);
+                bowl.addTopping(spicyMayo);
+                bowl.addTopping(eelSauce);
+                bowl.addTopping(furikake);
+                bowl.addTopping(crispyOnions);
+                bowl.addTopping(tempuraFlakes);
+                break;
+            case "2":
+                bowl = new SignaturePokeBowl("Hawaiian Classic", "White Rice", "M", "Hawaiian Classic");
+                bowl.addTopping(salmon);
+                bowl.addTopping(crabMix);
+                bowl.addTopping(avocado);
+                bowl.addTopping(cucumber);
+                bowl.addTopping(mango);
+                bowl.addTopping(greenOnion);
+                bowl.addTopping(sesameOil);
+                bowl.addTopping(ponzuSauce);
+                bowl.addTopping(furikake);
+                break;
+            case "3":
+                bowl = new SignaturePokeBowl("Spicy Volcano", "Brown Rice", "M", "Spicy Volcano");
+                bowl.addTopping(spicySalmon);
+                bowl.addTopping(shrimp);
+                bowl.addTopping(jalapeno);
+                bowl.addTopping(masago);
+                bowl.addTopping(greenOnion);
+                bowl.addTopping(sriracha);
+                bowl.addTopping(spicyMayo);
+                bowl.addTopping(tempuraFlakes);
+                break;
+            case "4":
+                bowl = new SignaturePokeBowl("Veggie Zen", "Mixed Greens", "M", "Veggie Zen");
+                bowl.addTopping(tofu);
+                bowl.addTopping(avocado);
+                bowl.addTopping(cucumber);
+                bowl.addTopping(seaweedSalad);
+                bowl.addTopping(pickledGinger);
+                bowl.addTopping(sesameOil);
+                bowl.addTopping(ponzuSauce);
+                bowl.addTopping(furikake);
+                bowl.addTopping(crispyOnions);
+                break;
+            default:
+                System.out.println("Invalid choice. Defaulting to Richie Special.");
+                bowl = new SignaturePokeBowl("Richie Special", "White Rice", "L", "Richie Special");
+                bowl.addTopping(spicyTuna);
+                bowl.addTopping(avocado);
+                bowl.addTopping(seaweedSalad);
+                bowl.addTopping(cucumber);
+                bowl.addTopping(greenOnion);
+                bowl.addTopping(masago);
+                bowl.addTopping(spicyMayo);
+                bowl.addTopping(eelSauce);
+                bowl.addTopping(furikake);
+                bowl.addTopping(crispyOnions);
+                bowl.addTopping(tempuraFlakes);
+                break;
+        }
+
+        System.out.println("\nWould you like to add extras to this Signature bowl? (yes/no)");
+        String extrasAnswer = scanner.nextLine();
+        if (extrasAnswer.equalsIgnoreCase("yes")) {
+            ArrayList<Extra> extras = extrasScreen(bowl.getToppings());
+            for (Extra e : extras) {
+                bowl.addExtra(e);
+            }
+        }
+
+        System.out.println("You chose: " + bowl.getName() + " (Signature, 10% off)");
+        return bowl;
+    }
+
 
 
     public static ArrayList<Topping> toppingsScreen() {

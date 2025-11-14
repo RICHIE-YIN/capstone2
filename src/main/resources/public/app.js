@@ -46,6 +46,45 @@ const app = {
         'Pineapple Cubes', 'Wasabi Peas'
     ],
 
+    signatureBowls: [
+        {
+            name: 'Richie Special',
+            base: 'White Rice',
+            size: 'large',
+            sizePrice: 15.50,
+            toppings: ['Spicy Tuna', 'Avocado', 'Seaweed Salad', 'Cucumber', 'Green Onion', 
+                      'Masago', 'Spicy Mayo', 'Eel Sauce', 'Furikake', 'Crispy Onions', 'Tempura Flakes'],
+            description: 'Spicy tuna perfection with all the fixings'
+        },
+        {
+            name: 'Hawaiian Classic',
+            base: 'White Rice',
+            size: 'medium',
+            sizePrice: 12.00,
+            toppings: ['Salmon', 'Crab Mix', 'Avocado', 'Cucumber', 'Mango', 
+                      'Green Onion', 'Sesame Oil', 'Ponzu Sauce', 'Furikake'],
+            description: 'Traditional island flavors with fresh salmon'
+        },
+        {
+            name: 'Spicy Volcano',
+            base: 'Brown Rice',
+            size: 'medium',
+            sizePrice: 12.00,
+            toppings: ['Spicy Salmon', 'Shrimp', 'Jalapeño', 'Masago', 
+                      'Green Onion', 'Sriracha', 'Spicy Mayo', 'Tempura Flakes'],
+            description: 'Heat lovers delight with spicy salmon and shrimp'
+        },
+        {
+            name: 'Veggie Zen',
+            base: 'Mixed Salad',
+            size: 'medium',
+            sizePrice: 12.00,
+            toppings: ['Tofu', 'Avocado', 'Cucumber', 'Seaweed Salad', 'Pickled Ginger', 
+                      'Sesame Oil', 'Ponzu Sauce', 'Furikake', 'Crispy Onions'],
+            description: 'Plant-based harmony with tofu and fresh veggies'
+        }
+    ],
+
     // State
     currentOrder: [],
     currentBowl: {
@@ -88,6 +127,8 @@ const app = {
         if (type === 'bowl') {
             this.resetBowl();
             this.showScreen('bowlScreen');
+        } else if (type === 'signature') {
+            this.showScreen('signatureScreen');
         } else if (type === 'drink') {
             this.resetDrink();
             this.showScreen('drinkScreen');
@@ -359,7 +400,7 @@ const app = {
     renderOrderItem(item, index) {
         if (item.type === 'bowl') {
             const toppingsList = item.toppings.map(t =>
-                `${t.name} ${t.premium ? 'â­' : ''}`
+                `${t.name} ${t.premium ? '' : ''}`
             ).join(', ');
 
             const extras = [];
@@ -371,7 +412,7 @@ const app = {
             return `
                 <div class="order-item">
                     <button class="remove-item" onclick="app.removeItem(${index})">Ã—</button>
-                    <h4>ðŸ¥— Poke Bowl - ${item.size.charAt(0).toUpperCase() + item.size.slice(1)}</h4>
+                    <h4>Poke Bowl - ${item.size.charAt(0).toUpperCase() + item.size.slice(1)}</h4>
                     <div class="order-item-details">
                         <strong>Base:</strong> ${item.base}<br>
                         ${toppingsList ? `<strong>Toppings:</strong> ${toppingsList}<br>` : ''}
@@ -409,8 +450,32 @@ const app = {
             return;
         }
 
+        // Validate order: must have at least a drink or side if no bowl
+        const hasBowl = this.currentOrder.some(item => item.type === 'bowl');
+        const hasDrinkOrSide = this.currentOrder.some(item => item.type === 'drink' || item.type === 'side');
+
+        if (!hasBowl && !hasDrinkOrSide) {
+            this.showValidationPopup('Your order must include at least a drink or side if you don\'t have a bowl.');
+            return;
+        }
+
         this.generateReceipt();
         this.showScreen('receiptScreen');
+    },
+
+    showValidationPopup(message) {
+        // Create popup overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'popup-overlay';
+        overlay.innerHTML = `
+            <div class="popup-box">
+                <div class="popup-icon">⚠️</div>
+                <h3>Order Validation</h3>
+                <p>${message}</p>
+                <button class="btn" onclick="this.closest('.popup-overlay').remove()">Got it!</button>
+            </div>
+        `;
+        document.body.appendChild(overlay);
     },
 
     generateReceipt() {
@@ -464,6 +529,41 @@ const app = {
     startNewOrder() {
         this.currentOrder = [];
         this.showScreen('welcomeScreen');
+    },
+
+    // Signature Bowl Methods
+    selectSignatureBowl(bowlName) {
+        const signature = this.signatureBowls.find(b => b.name === bowlName);
+        if (!signature) return;
+
+        // Calculate price based on toppings
+        let price = signature.sizePrice;
+        signature.toppings.forEach(toppingName => {
+            const topping = this.toppings.find(t => t.name === toppingName);
+            if (topping) {
+                price += topping.premium ? topping.price * 1.5 : topping.price;
+            }
+        });
+
+        // Create bowl object matching backend structure
+        const bowl = {
+            type: 'bowl',
+            name: signature.name,
+            size: signature.size,
+            base: signature.base,
+            toppings: signature.toppings.map(toppingName => {
+                return this.toppings.find(t => t.name === toppingName);
+            }).filter(t => t !== undefined),
+            extraMeat: false,
+            extraToppings: [],
+            price: price,
+            isSignature: true
+        };
+
+        this.currentOrder.push(bowl);
+        this.showNotification(`${signature.name} added to order!`);
+        this.showScreen('menuScreen');
+        this.updateOrderDisplay();
     },
 
     // Rendering

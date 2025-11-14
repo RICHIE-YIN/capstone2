@@ -1,6 +1,7 @@
 package com.richie.dao;
 
 import com.richie.model.*;
+import com.richie.util.OrderValidator;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -8,57 +9,61 @@ import java.util.ArrayList;
 public class OrderDAO {
     private static ToppingDAO toppingDAO = new ToppingDAO();
 
-    public static void main(String[] args) {
-        System.out.println("Testing order");
-        OrderDAO orderDAO = new OrderDAO();
-
-        //test order
-        Order order = new Order("Test Order");
-
-        //add poke bowl
-        PokeBowl pokeBowl = new PokeBowl("test bowl", "white rice", "l");
-
-        // Add regular toppings
-        Topping spicyTuna = toppingDAO.getToppingByName("Spicy Tuna");
-        pokeBowl.addTopping(spicyTuna);
-        pokeBowl.addTopping(toppingDAO.getToppingByName("Spicy Mayo"));
-        pokeBowl.addTopping(toppingDAO.getToppingByName("Eel Sauce"));
-
-        // Add an extra (double spicy tuna)
-        Extra extraSpicyTuna = new Extra(spicyTuna);
-        pokeBowl.addExtra(extraSpicyTuna);
-
-        order.addItem(pokeBowl);
-
-        //add drink
-        Drink drink = new Drink("M", "Lavender Lemonade");
-        order.addItem(drink);
-
-        //add side
-        Sides side = new Sides("Takoyaki");
-        order.addItem(side);
-
-        System.out.println("Saving order");
-        int orderId = orderDAO.saveOrder(order);
-
-        if(orderId > 0) {
-            System.out.println("\nSuccess! Order ID: " + orderId);
-            System.out.println("Total: $" + order.getTotal());
-        } else {
-            System.out.println("\nFailed");
-        }
-    }
-
+//    public static void main(String[] args) {
+//        System.out.println("Testing order");
+//        OrderDAO orderDAO = new OrderDAO();
+//
+//        Order order = new Order("Test Order");
+//
+//        PokeBowl pokeBowl = new PokeBowl("test bowl", "white rice", "l");
+//
+//        Topping spicyTuna = toppingDAO.getToppingByName("Spicy Tuna");
+//        pokeBowl.addTopping(spicyTuna);
+//        pokeBowl.addTopping(toppingDAO.getToppingByName("Spicy Mayo"));
+//        pokeBowl.addTopping(toppingDAO.getToppingByName("Eel Sauce"));
+//
+//        Extra extraSpicyTuna = new Extra(spicyTuna);
+//        pokeBowl.addExtra(extraSpicyTuna);
+//
+//        order.addItem(pokeBowl);
+//
+//        Drink drink = new Drink("M", "Lavender Lemonade");
+//        order.addItem(drink);
+//
+//        Sides side = new Sides("Takoyaki");
+//        order.addItem(side);
+//
+//        System.out.println("Saving order");
+//        int orderId = orderDAO.saveOrder(order);
+//
+//        if (orderId > 0) {
+//            System.out.println("\nSuccess! Order ID: " + orderId);
+//            System.out.println("Total: $" + order.getTotal());
+//        } else {
+//            System.out.println("\nFailed");
+//        }
+//    }
 
     public int saveOrder(Order order) {
-        String sqlOrderCommand = "INSERT INTO orders (customer_name, order_number, subtotal, tax, total) " + "VALUES (?, ?, ?, ?, ?) RETURNING id";
-        String sqlItemCommand = "INSERT INTO order_items (order_id, item_type, item_name, base, size, flavor, side_type, price) VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
-        String sqlToppingCommand = "INSERT INTO order_item_toppings (order_item_id, topping_id, price) VALUES (?, ?, ?)";
-        String sqlExtraCommand = "INSERT INTO order_item_extras (order_item_id, topping_id, upcharge) VALUES (?, ?, ?)";
+        if (!OrderValidator.isValid(order)) {
+            System.out.println("Order is invalid. You need to at least order a drink or side.");
+            return -1;
+        }
+
+        String sqlOrderCommand =
+                "INSERT INTO orders (customer_name, order_number, subtotal, tax, total) " +
+                        "VALUES (?, ?, ?, ?, ?) RETURNING id";
+        String sqlItemCommand =
+                "INSERT INTO order_items (order_id, item_type, item_name, base, size, flavor, side_type, price) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?) RETURNING id";
+        String sqlToppingCommand =
+                "INSERT INTO order_item_toppings (order_item_id, topping_id, price) VALUES (?, ?, ?)";
+        String sqlExtraCommand =
+                "INSERT INTO order_item_extras (order_item_id, topping_id, upcharge) VALUES (?, ?, ?)";
 
         Connection conn = null;
 
-        try{
+        try {
             conn = DatabaseConnection.getConnection();
             conn.setAutoCommit(false);
 
@@ -66,8 +71,8 @@ public class OrderDAO {
             int tempId = getNextOrderNumber();
             String orderNumber = String.format("F%04d", tempId);
 
-            //save order
-            try(PreparedStatement preparedStatement = conn.prepareStatement(sqlOrderCommand)){
+            // Save order
+            try (PreparedStatement preparedStatement = conn.prepareStatement(sqlOrderCommand)) {
                 preparedStatement.setString(1, order.getName());
                 preparedStatement.setString(2, orderNumber);
                 preparedStatement.setDouble(3, order.getSubtotal());
@@ -82,15 +87,14 @@ public class OrderDAO {
                 System.out.println("Order saved: ID=" + orderId + " | Number=" + orderNumber);
             }
 
-            //save items
-            for(Product product : order.getItems()) {
+            // Save items
+            for (Product product : order.getItems()) {
                 int itemId;
 
-                try(PreparedStatement preparedStatement = conn.prepareStatement(sqlItemCommand)){
+                try (PreparedStatement preparedStatement = conn.prepareStatement(sqlItemCommand)) {
                     preparedStatement.setInt(1, orderId);
 
-                    //set fields for product type
-                    if(product instanceof PokeBowl) {
+                    if (product instanceof PokeBowl) {
                         PokeBowl pokeBowl = (PokeBowl) product;
                         preparedStatement.setString(2, "poke bowl");
                         preparedStatement.setString(3, pokeBowl.getName());
@@ -124,13 +128,12 @@ public class OrderDAO {
                     System.out.println("Item saved: Id = " + itemId);
                 }
 
-                //save toppings and extras if bowl
-                if(product instanceof PokeBowl) {
+                if (product instanceof PokeBowl) {
                     PokeBowl pokeBowl = (PokeBowl) product;
 
-                    // Save toppings
-                    try(PreparedStatement preparedStatement = conn.prepareStatement(sqlToppingCommand)) {
-                        for(Topping t : pokeBowl.getToppings()) {
+                    // Toppings
+                    try (PreparedStatement preparedStatement = conn.prepareStatement(sqlToppingCommand)) {
+                        for (Topping t : pokeBowl.getToppings()) {
                             int toppingId = toppingDAO.getToppingId(conn, t.getName());
                             preparedStatement.setInt(1, itemId);
                             preparedStatement.setInt(2, toppingId);
@@ -140,11 +143,10 @@ public class OrderDAO {
                         }
                     }
 
-                    // Save extras
+                    // Extras
                     if (pokeBowl.hasExtras()) {
-                        try(PreparedStatement preparedStatement = conn.prepareStatement(sqlExtraCommand)) {
-                            for(Extra e : pokeBowl.getExtras()) {
-                                // Get the topping ID from the extra's topping
+                        try (PreparedStatement preparedStatement = conn.prepareStatement(sqlExtraCommand)) {
+                            for (Extra e : pokeBowl.getExtras()) {
                                 int toppingId = toppingDAO.getToppingId(conn, e.getTopping().getName());
                                 preparedStatement.setInt(1, itemId);
                                 preparedStatement.setInt(2, toppingId);
@@ -158,14 +160,14 @@ public class OrderDAO {
             }
 
             conn.commit();
-            System.out.println("Transaction commited");
+            System.out.println("Transaction committed");
             return orderId;
 
         } catch (SQLException e) {
             System.out.println("Error saving order");
             e.printStackTrace();
-            if(conn != null) {
-                try{
+            if (conn != null) {
+                try {
                     conn.rollback();
                     System.out.println("Transaction rolled back");
                 } catch (SQLException ex) {
@@ -174,8 +176,8 @@ public class OrderDAO {
             }
             return -1;
         } finally {
-            if(conn != null) {
-                try{
+            if (conn != null) {
+                try {
                     conn.close();
                 } catch (SQLException e) {
                     throw new RuntimeException(e);
