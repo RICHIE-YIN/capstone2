@@ -7,10 +7,10 @@ public class OrderValidator {
     private OrderValidator() {
     }
 
-    // Returns true if the order passes all business rules
+    // returns true if the order passes all business rules
     public static boolean isValid(Order order) {
 
-        // Rule 1: Order cannot be empty
+        // order cannot be empty
         if (order.getItems().isEmpty()) {
             return false;
         }
@@ -29,7 +29,7 @@ public class OrderValidator {
             }
         }
 
-        // Rule 2: If no bowls, must have at least one drink OR one side
+        // if no entree, must have at least one drink or one side
         if (bowlCount == 0 && drinkCount == 0 && sideCount == 0) {
             return false;
         }

@@ -15,7 +15,6 @@ public class DrinksDAO {
              ResultSet rs = stmt.executeQuery(sqlCommand)) {
 
             while (rs.next()) {
-                // Create Drink with N/A size as placeholder
                 Drink d = new Drink("N/A", rs.getString("name"));
                 drinks.add(d);
             }

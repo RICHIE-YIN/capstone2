@@ -24,8 +24,8 @@ public class Main {
 //
 //        Javalin app = Javalin.create(config -> {
 //            config.staticFiles.add(staticFiles -> {
-//                staticFiles.hostedPath = "/";       // served from root
-//                staticFiles.directory = "public";   // folder *next to* pom.xml
+//                staticFiles.hostedPath = "/";
+//                staticFiles.directory = "public";
 //                staticFiles.location = Location.EXTERNAL;
 //            });
 //        }).start(port);
@@ -45,7 +45,6 @@ public class Main {
         }).start(port);
 
         app.get("/", ctx -> ctx.redirect("/index.html"));
-
 
         app.get("/api/health", ctx -> ctx.json(Map.of("status", "healthy")));
 

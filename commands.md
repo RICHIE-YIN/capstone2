@@ -1,22 +1,26 @@
 ```declarative
+
+psql foodhall
+
 psql foodhall -f schema.sql
+
+SELECT * FROM toppings;
+
+SELECT * FROM drinks;
+
+SELECT * FROM sides;
 ```
 ```declarative
 mvn clean compile exec:java -Dexec.mainClass="com.richie.web.Main"
-```
-```declarative
+
 curl -X GET http://localhost:8080/api/health
-```
-```declarative
+
 curl -X GET http://localhost:8080/api/toppings
-```
-```declarative
+
 curl -X GET http://localhost:8080/api/sides
-```
-```declarative
+
 curl -X GET http://localhost:8080/api/drinks
-```
-```declarative
+
 curl -X GET http://localhost:8080/api/signature-bowls
 ```
 

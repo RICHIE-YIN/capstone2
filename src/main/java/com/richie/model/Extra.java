@@ -13,7 +13,7 @@ public class Extra {
 
     public double getUpcharge() {
         if (topping.isPremium()) {
-            return 2.00;  // Extra protein
+            return 2.00;  // Extra premium
         } else {
             return 0.50;  // Extra regular topping
         }
