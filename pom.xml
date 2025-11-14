@@ -53,9 +53,6 @@
     </dependencies>
 
     <build>
-        <!-- Name of the final shaded JAR -->
-        <finalName>app</finalName>
-
         <plugins>
             <!-- Java 17 compiler -->
             <plugin>
@@ -80,7 +77,6 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <!-- Keep the POM simple for deployment -->
                             <createDependencyReducedPom>false</createDependencyReducedPom>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
