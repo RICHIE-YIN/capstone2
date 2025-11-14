@@ -19,7 +19,7 @@ public class CLI {
     public static void mainScreen() {
         boolean picking = true;
         while (picking) {
-            System.out.println("Welcome to Funkin' Poke!");
+            System.out.println("Welcome to The Poke Spot!");
             System.out.println("Press 1 to order | Press 2 to quit or when you're finished");
             String answer = scanner.nextLine();
 

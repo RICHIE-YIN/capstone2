@@ -1,10 +1,14 @@
 package com.richie.web;
 
 import com.richie.util.OrderValidator;
+import com.richie.util.ReceiptFileManager;
 import io.javalin.Javalin;
 import com.richie.dao.*;
 import com.richie.model.*;
+import io.javalin.http.staticfiles.Location;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +24,15 @@ public class Main {
     public static void main(String[] args) {
         int port = getPort();
 
-        Javalin app = Javalin.create().start(port);
-        System.out.println("Server running on port: " + port);
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.hostedPath = "/";       // served from root
+                staticFiles.directory = "public";   // folder *next to* pom.xml
+                staticFiles.location = Location.EXTERNAL;
+            });
+        }).start(port);
+        app.get("/", ctx -> ctx.redirect("/index.html"));
 
-        app.get("/", ctx -> ctx.result("Funkin Poke API. Go to /api/toppings"));
 
         app.get("/api/health", ctx -> ctx.json(Map.of("status", "healthy")));
 
@@ -185,6 +194,9 @@ public class Main {
 
                 int orderId = orderDAO.saveOrder(order);
                 if (orderId > 0) {
+
+                    String receiptFileName = ReceiptFileManager.saveReceipt(order);
+
                     Map<String, Object> resp = new HashMap<>();
                     resp.put("success", true);
                     resp.put("orderId", orderId);
@@ -194,6 +206,7 @@ public class Main {
                     resp.put("tax", order.getTax());
                     resp.put("total", order.getTotal());
                     resp.put("receipt", formatReceipt(order));
+                    resp.put("receiptFileName", receiptFileName);
 
                     ctx.status(201).json(resp);
                 } else {
@@ -245,7 +258,7 @@ public class Main {
         StringBuilder receipt = new StringBuilder();
 
         receipt.append("======================================\n");
-        receipt.append("         FUNKIN POKE RECEIPT          \n");
+        receipt.append("         THE POKE SPOT RECEIPT        \n");
         receipt.append("======================================\n");
         receipt.append(String.format("Order #: %s\n", order.getOrderNumber()));
         receipt.append(String.format("Customer: %s\n", order.getName()));

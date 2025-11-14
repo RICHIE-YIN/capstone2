@@ -90,7 +90,7 @@ INSERT INTO toppings (name, base_price, is_premium) VALUES
 ('Shrimp', 1.75, true),
 ('Tofu', 1.00, true),
 ('Crab Mix', 1.25, true),
-('Avocado', 1.00, true),
+('Avocado', 1.00, false),
 ('Seaweed Salad', 0.75, false),
 ('Cucumber', 0.25, false),
 ('Mango', 0.50, false),

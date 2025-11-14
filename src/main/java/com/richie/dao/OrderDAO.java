@@ -9,41 +9,6 @@ import java.util.ArrayList;
 public class OrderDAO {
     private static ToppingDAO toppingDAO = new ToppingDAO();
 
-//    public static void main(String[] args) {
-//        System.out.println("Testing order");
-//        OrderDAO orderDAO = new OrderDAO();
-//
-//        Order order = new Order("Test Order");
-//
-//        PokeBowl pokeBowl = new PokeBowl("test bowl", "white rice", "l");
-//
-//        Topping spicyTuna = toppingDAO.getToppingByName("Spicy Tuna");
-//        pokeBowl.addTopping(spicyTuna);
-//        pokeBowl.addTopping(toppingDAO.getToppingByName("Spicy Mayo"));
-//        pokeBowl.addTopping(toppingDAO.getToppingByName("Eel Sauce"));
-//
-//        Extra extraSpicyTuna = new Extra(spicyTuna);
-//        pokeBowl.addExtra(extraSpicyTuna);
-//
-//        order.addItem(pokeBowl);
-//
-//        Drink drink = new Drink("M", "Lavender Lemonade");
-//        order.addItem(drink);
-//
-//        Sides side = new Sides("Takoyaki");
-//        order.addItem(side);
-//
-//        System.out.println("Saving order");
-//        int orderId = orderDAO.saveOrder(order);
-//
-//        if (orderId > 0) {
-//            System.out.println("\nSuccess! Order ID: " + orderId);
-//            System.out.println("Total: $" + order.getTotal());
-//        } else {
-//            System.out.println("\nFailed");
-//        }
-//    }
-
     public int saveOrder(Order order) {
         if (!OrderValidator.isValid(order)) {
             System.out.println("Order is invalid. You need to at least order a drink or side.");

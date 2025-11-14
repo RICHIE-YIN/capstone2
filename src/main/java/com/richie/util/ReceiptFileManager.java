@@ -15,36 +15,37 @@ public class ReceiptFileManager {
     private static final DateTimeFormatter timeStamp = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
     private static final DateTimeFormatter displayTimeStamp = DateTimeFormatter.ofPattern("'Date:' yyyy-MM-dd | 'Time:' HH:mm:ss");
 
-    public static void saveReceipt(Order order) {
+    public static String saveReceipt(Order order) {
         File folder = new File(receiptsDir);
-        if(!folder.exists()) {
+        if (!folder.exists()) {
             folder.mkdirs();
         }
 
-        String fileName = receiptsDir + "/" + now.format(timeStamp) + ".txt";
+        LocalDateTime now = LocalDateTime.now();
+        String baseName = now.format(timeStamp) + ".txt";
+        String filePath = receiptsDir + "/" + baseName;
 
-        try{
-            FileWriter fileWriter = new FileWriter(fileName);
+        try {
+            FileWriter fileWriter = new FileWriter(filePath);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            bufferedWriter.write("Funkin Poke!!! RECEIPT\n");
+            bufferedWriter.write("The Poke Spot - Receipt\n");
             bufferedWriter.write("Date: " + LocalDateTime.now().format(displayTimeStamp) + "\n");
             bufferedWriter.write("======================================\n");
 
-            for(Product p : order.getItems()) {
+            for (Product p : order.getItems()) {
                 bufferedWriter.write(String.format("Item: %s, Price: %.2f\n", p.getName(), p.getPrice()));
-                if(p instanceof PokeBowl) {
+                if (p instanceof PokeBowl) {
                     PokeBowl s = (PokeBowl) p;
                     bufferedWriter.write(" Base: " + s.getBase() + " | Size: " + s.getSize() + "\n");
-                    if(!s.getToppings().isEmpty()) {
+                    if (!s.getToppings().isEmpty()) {
                         bufferedWriter.write("  Toppings:\n");
-                        for(Topping t : s.getToppings()) {
+                        for (Topping t : s.getToppings()) {
                             bufferedWriter.write("   - " + t.getName() + "\n");
                         }
                     }
-                    // ADD THIS BLOCK FOR EXTRAS
-                    if(s.hasExtras()) {
+                    if (s.hasExtras()) {
                         bufferedWriter.write("  Extras:\n");
-                        for(Extra e : s.getExtras()) {
+                        for (Extra e : s.getExtras()) {
                             bufferedWriter.write(String.format("   - %s: +$%.2f\n", e.getName(), e.getUpcharge()));
                         }
                     }
@@ -67,7 +68,8 @@ public class ReceiptFileManager {
             bufferedWriter.close();
             fileWriter.close();
 
-            System.out.println("Receipt saved: " + receiptsDir);
+            System.out.println("Receipt saved: " + filePath);
+            return baseName;
 
         } catch (IOException e) {
             throw new RuntimeException(e);
