@@ -22,15 +22,24 @@ public class Main {
     private static OrderDAO orderDAO = new OrderDAO();
 
     public static void main(String[] args) {
-        int port = getPort();
+//        int port = getPort();
+//
+//        Javalin app = Javalin.create(config -> {
+//            config.staticFiles.add(staticFiles -> {
+//                staticFiles.hostedPath = "/";       // served from root
+//                staticFiles.directory = "public";   // folder *next to* pom.xml
+//                staticFiles.location = Location.EXTERNAL;
+//            });
+//        }).start(port);
+
+        int port = Integer.parseInt(
+                System.getenv().getOrDefault("PORT", "8080")
+        );
 
         Javalin app = Javalin.create(config -> {
-            config.staticFiles.add(staticFiles -> {
-                staticFiles.hostedPath = "/";       // served from root
-                staticFiles.directory = "public";   // folder *next to* pom.xml
-                staticFiles.location = Location.EXTERNAL;
-            });
+            config.http.defaultContentType = "application/json";
         }).start(port);
+
         app.get("/", ctx -> ctx.redirect("/index.html"));
 
 
