@@ -38,6 +38,12 @@ public class Main {
 
         Javalin app = Javalin.create(config -> {
             config.http.defaultContentType = "application/json";
+
+            config.staticFiles.add(staticFiles -> {
+                staticFiles.hostedPath = "/";       // URL prefix
+                staticFiles.directory = "public";   // folder relative to working dir
+                staticFiles.location = Location.EXTERNAL;
+            });
         }).start(port);
 
         app.get("/", ctx -> ctx.redirect("/index.html"));
